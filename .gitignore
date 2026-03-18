@@ -1,0 +1,14 @@
+# Hemligheter och miljövariabler
+.env
+
+# Installerade paket
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Kompilerad kod
+dist/
+client/dist/
+
+# Systemfiler
+.DS_Store
