@@ -2,7 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db';
-import authRoutes from './routes/authRoutes'; // Importera dina routes
+import authRoutes from './routes/authRoutes';
+import workoutRoutes from './routes/workoutRoutes';
 
 dotenv.config();
 connectDB();
@@ -12,8 +13,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Koppla in inloggnings-rutterna
 app.use('/api/auth', authRoutes);
+app.use('/api/workouts', workoutRoutes);
 
 app.get('/', (req, res) => {
   res.send('Foundation API rullar!');
