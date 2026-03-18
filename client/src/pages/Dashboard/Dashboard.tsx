@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AddWorkout from '../../components/AddWorkout';
 import './Dashboard.scss';
@@ -22,9 +21,8 @@ function Dashboard() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
-  const [editExercises, setEditExercises] = useState<Exercise[]>([]); // Nytt state för övningar
+  const [editExercises, setEditExercises] = useState<Exercise[]>([]);
   
-  const navigate = useNavigate();
   const username = localStorage.getItem('user') || 'Användare';
 
   const fetchWorkouts = async () => {
@@ -57,14 +55,12 @@ function Dashboard() {
     }
   };
 
-  // Starta redigering - kopiera in ALL data till edit-states
   const startEdit = (workout: Workout) => {
     setEditingId(workout._id);
     setEditTitle(workout.title);
-    setEditExercises([...workout.exercises]); // Skapa en kopia av övningarna
+    setEditExercises([...workout.exercises]);
   };
 
-  // Funktion för att ändra ett specifikt fält i en specifik övning
   const handleExerciseChange = (index: number, field: keyof Exercise, value: string | number) => {
     const updatedExercises = [...editExercises];
     updatedExercises[index] = { 
@@ -74,15 +70,11 @@ function Dashboard() {
     setEditExercises(updatedExercises);
   };
 
-  // Spara hela passet
   const handleUpdate = async (id: string) => {
     const token = localStorage.getItem('token');
     try {
       await axios.put(`http://localhost:5000/api/workouts/${id}`, 
-        { 
-          title: editTitle, 
-          exercises: editExercises // Skicka med den uppdaterade listan
-        }, 
+        { title: editTitle, exercises: editExercises }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setEditingId(null);
@@ -92,16 +84,10 @@ function Dashboard() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate('/');
-  };
-
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
         <h1>Hej {username}!</h1>
-        <button onClick={handleLogout} className="logout-button">Logga ut</button>
       </header>
 
       <AddWorkout onWorkoutAdded={fetchWorkouts} />
@@ -109,6 +95,8 @@ function Dashboard() {
       <section className="history-section">
         <h2>Din historik</h2>
         <div className="workout-list">
+          {workouts.length === 0 && <p>Inga pass loggade än. Kom igång!</p>}
+          
           {workouts.map((w) => (
             <div key={w._id} className="workout-card">
               <div className="card-header">
@@ -117,6 +105,7 @@ function Dashboard() {
                     className="edit-title-input"
                     value={editTitle} 
                     onChange={(e) => setEditTitle(e.target.value)}
+                    autoFocus
                   />
                 ) : (
                   <h3>{w.title}</h3>
@@ -137,7 +126,9 @@ function Dashboard() {
                 </div>
               </div>
               
-              <span className="workout-date">{new Date(w.createdAt).toLocaleDateString()}</span>
+              <span className="workout-date">
+                {new Date(w.createdAt).toLocaleDateString()}
+              </span>
 
               <ul className="exercise-list">
                 {(editingId === w._id ? editExercises : w.exercises).map((ex, i) => (
