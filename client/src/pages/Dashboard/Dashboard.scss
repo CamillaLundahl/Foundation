@@ -1,24 +1,226 @@
-.dashboard-container {
-  text-align: center;
-  margin-top: 50px;
-  font-family: sans-serif;
+/* Dashboard.scss */
 
-  h1 {
-    color: #333;
+.dashboard-container {
+  padding: 20px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #fcfcfc;
+  min-height: 100vh;
+
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+
+    h1 {
+      margin: 0;
+      color: #1a1a1a;
+      font-size: 1.8rem;
+    }
+
+    .logout-button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background-color 0.2s, transform 0.1s;
+
+      &:hover {
+        background-color: #bb2d3b;
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
   }
 
-  .logout-button {
-    padding: 10px 20px;
-    margin-top: 20px;
-    cursor: pointer;
-    background: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-weight: bold;
+  .history-section {
+    h2 {
+      color: #444;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
 
-    &:hover {
-      background: #c82333;
+      &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+      }
+    }
+
+    .workout-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .workout-card {
+        border: 1px solid #e0e0e0;
+        padding: 24px;
+        border-radius: 16px;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        transition: box-shadow 0.2s;
+
+        &:hover {
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8px;
+          gap: 15px;
+
+          h3 {
+            margin: 0;
+            color: #007bff;
+            font-size: 1.25rem;
+          }
+
+          .edit-title-input {
+            flex: 1;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 8px 12px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            color: #333;
+            outline: none;
+            background-color: #f0f7ff;
+          }
+
+          .card-actions {
+            display: flex;
+            gap: 10px;
+
+            button {
+              padding: 8px 14px;
+              border-radius: 8px;
+              cursor: pointer;
+              font-size: 0.85rem;
+              font-weight: 600;
+              border: 1px solid transparent;
+              transition: all 0.2s;
+            }
+
+            .edit-btn {
+              background-color: #f8f9fa;
+              color: #555;
+              border-color: #ddd;
+              &:hover { background-color: #e2e6ea; }
+            }
+
+            .delete-button {
+              background-color: transparent;
+              color: #dc3545;
+              border-color: #f8d7da;
+              &:hover { background-color: #dc3545; color: white; }
+            }
+
+            .save-btn {
+              background-color: #28a745;
+              color: white;
+              &:hover { background-color: #218838; }
+            }
+
+            .cancel-btn {
+              background-color: #6c757d;
+              color: white;
+              &:hover { background-color: #5a6268; }
+            }
+          }
+        }
+
+        .workout-date {
+          font-size: 0.85rem;
+          color: #999;
+          display: block;
+          margin-bottom: 20px;
+          font-weight: 500;
+        }
+
+        .exercise-list {
+          margin: 0;
+          padding: 0;
+          list-style: none;
+
+          li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+            color: #444;
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            p {
+              margin: 0;
+              font-size: 1rem;
+              strong {
+                color: #222;
+                font-weight: 600;
+              }
+            }
+          }
+
+          .edit-row {
+            background-color: #f8fbff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 8px 0;
+
+            .edit-exercise-inputs {
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
+              gap: 10px;
+
+              input {
+                padding: 8px 10px;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                font-size: 0.95rem;
+                outline: none;
+
+                &:focus {
+                  border-color: #007bff;
+                  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+                }
+
+                &[type="text"] {
+                  flex: 2;
+                  min-width: 150px;
+                }
+
+                &[type="number"] {
+                  width: 60px;
+                  text-align: center;
+                }
+              }
+
+              span {
+                font-weight: bold;
+                color: #888;
+                font-size: 0.9rem;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
