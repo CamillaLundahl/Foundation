@@ -4,8 +4,26 @@ import axios from 'axios';
 import AddWorkout from '../../components/AddWorkout';
 import './Dashboard.scss';
 
+interface Exercise {
+  name: string;
+  sets: number;
+  reps: number;
+  weight: number;
+}
+
+interface Workout {
+  _id: string;
+  title: string;
+  exercises: Exercise[];
+  createdAt: string;
+}
+
 function Dashboard() {
-  const [workouts, setWorkouts] = useState([]);
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editExercises, setEditExercises] = useState<Exercise[]>([]); // Nytt state för övningar
+  
   const navigate = useNavigate();
   const username = localStorage.getItem('user') || 'Användare';
 
@@ -17,11 +35,14 @@ function Dashboard() {
       });
       setWorkouts(res.data);
     } catch (err) {
-      console.error('Kunde inte hämta pass');
+      console.error('Kunde inte hämta pass', err);
     }
   };
 
-  // NY FUNKTION: Radera pass
+  useEffect(() => {
+    fetchWorkouts();
+  }, []);
+
   const handleDelete = async (id: string) => {
     if (window.confirm('Vill du verkligen ta bort detta pass?')) {
       const token = localStorage.getItem('token');
@@ -29,16 +50,47 @@ function Dashboard() {
         await axios.delete(`http://localhost:5000/api/workouts/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        fetchWorkouts(); // Uppdatera listan direkt
+        fetchWorkouts();
       } catch (err) {
         alert('Kunde inte radera passet');
       }
     }
   };
 
-  useEffect(() => {
-    fetchWorkouts();
-  }, []);
+  // Starta redigering - kopiera in ALL data till edit-states
+  const startEdit = (workout: Workout) => {
+    setEditingId(workout._id);
+    setEditTitle(workout.title);
+    setEditExercises([...workout.exercises]); // Skapa en kopia av övningarna
+  };
+
+  // Funktion för att ändra ett specifikt fält i en specifik övning
+  const handleExerciseChange = (index: number, field: keyof Exercise, value: string | number) => {
+    const updatedExercises = [...editExercises];
+    updatedExercises[index] = { 
+      ...updatedExercises[index], 
+      [field]: field === 'name' ? value : Number(value) 
+    };
+    setEditExercises(updatedExercises);
+  };
+
+  // Spara hela passet
+  const handleUpdate = async (id: string) => {
+    const token = localStorage.getItem('token');
+    try {
+      await axios.put(`http://localhost:5000/api/workouts/${id}`, 
+        { 
+          title: editTitle, 
+          exercises: editExercises // Skicka med den uppdaterade listan
+        }, 
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setEditingId(null);
+      fetchWorkouts();
+    } catch (err) {
+      alert('Kunde inte uppdatera passet');
+    }
+  };
 
   const handleLogout = () => {
     localStorage.clear();
@@ -57,20 +109,51 @@ function Dashboard() {
       <section className="history-section">
         <h2>Din historik</h2>
         <div className="workout-list">
-          {workouts.map((w: any) => (
+          {workouts.map((w) => (
             <div key={w._id} className="workout-card">
               <div className="card-header">
-                <h3>{w.title}</h3>
-                {/* NY KNAPP: Radera */}
-                <button onClick={() => handleDelete(w._id)} className="delete-button">
-                  Radera
-                </button>
+                {editingId === w._id ? (
+                  <input 
+                    className="edit-title-input"
+                    value={editTitle} 
+                    onChange={(e) => setEditTitle(e.target.value)}
+                  />
+                ) : (
+                  <h3>{w.title}</h3>
+                )}
+                
+                <div className="card-actions">
+                  {editingId === w._id ? (
+                    <>
+                      <button onClick={() => handleUpdate(w._id)} className="save-btn">Spara</button>
+                      <button onClick={() => setEditingId(null)} className="cancel-btn">Avbryt</button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => startEdit(w)} className="edit-btn">Ändra</button>
+                      <button onClick={() => handleDelete(w._id)} className="delete-button">Radera</button>
+                    </>
+                  )}
+                </div>
               </div>
+              
               <span className="workout-date">{new Date(w.createdAt).toLocaleDateString()}</span>
-              <ul>
-                {w.exercises.map((ex: any, i: number) => (
-                  <li key={i}>
-                    <strong>{ex.name}:</strong> {ex.sets}x{ex.reps} — {ex.weight}kg
+
+              <ul className="exercise-list">
+                {(editingId === w._id ? editExercises : w.exercises).map((ex, i) => (
+                  <li key={i} className={editingId === w._id ? 'edit-row' : ''}>
+                    {editingId === w._id ? (
+                      <div className="edit-exercise-inputs">
+                        <input type="text" value={ex.name} onChange={(e) => handleExerciseChange(i, 'name', e.target.value)} />
+                        <input type="number" value={ex.sets} onChange={(e) => handleExerciseChange(i, 'sets', e.target.value)} />
+                        <span>x</span>
+                        <input type="number" value={ex.reps} onChange={(e) => handleExerciseChange(i, 'reps', e.target.value)} />
+                        <input type="number" value={ex.weight} onChange={(e) => handleExerciseChange(i, 'weight', e.target.value)} />
+                        <span>kg</span>
+                      </div>
+                    ) : (
+                      <p><strong>{ex.name}:</strong> {ex.sets}x{ex.reps} — {ex.weight}kg</p>
+                    )}
                   </li>
                 ))}
               </ul>
