@@ -31,7 +31,13 @@ function Header() {
             </Link>
             <Link to="#" className="nav-link disabled">Statistik</Link>
             <Link to="#" className="nav-link disabled">Övningar</Link>
-            <Link to="#" className="nav-link disabled">Profil</Link>
+            
+            <Link 
+              to="/profile" 
+              className={`nav-link ${location.pathname === '/profile' ? 'active' : ''}`}
+            >
+              Profil
+            </Link>
           </nav>
         </div>
         
