@@ -4,9 +4,10 @@ import "./AddWorkout.scss";
 
 interface AddWorkoutProps {
   onWorkoutAdded: () => void;
+  templateData?: { templateExercises: string[], templateTitle: string } | null;
 }
 
-function AddWorkout({ onWorkoutAdded }: AddWorkoutProps) {
+function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
   const [title, setTitle] = useState("");
   const [exercises, setExercises] = useState<any[]>([]);
   const [library, setLibrary] = useState<any[]>([]);
@@ -29,8 +30,31 @@ function AddWorkout({ onWorkoutAdded }: AddWorkoutProps) {
     fetchLibrary();
   }, []);
 
+  useEffect(() => {
+    if (templateData) {
+      setTitle(templateData.templateTitle);
+      const preparedExercises = templateData.templateExercises.map(exName => ({
+        name: exName,
+        sets: 0,
+        reps: 0,
+        weight: 0
+      }));
+      setExercises(preparedExercises);
+    }
+  }, [templateData]);
+
+  const updateStagedExercise = (index: number, field: string, value: number) => {
+    const updated = [...exercises];
+    updated[index] = { ...updated[index], [field]: value };
+    setExercises(updated);
+  };
+
+  const removeExercise = (index: number) => {
+    setExercises(exercises.filter((_, i) => i !== index));
+  };
+
   const addExercise = () => {
-    if (name && sets > 0) {
+    if (name) {
       setExercises([...exercises, { name, sets, reps, weight }]);
       setSets(0); setReps(0); setWeight(0);
     }
@@ -39,27 +63,21 @@ function AddWorkout({ onWorkoutAdded }: AddWorkoutProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
+    
+    const finalExercises = name && sets > 0 ? [...exercises, { name, sets, reps, weight }] : exercises;
 
-    const finalExercises = name ? [...exercises, { name, sets, reps, weight }] : exercises;
-
-    if (finalExercises.length === 0) {
-      alert("Lägg till minst en övning!");
-      return;
-    }
+    if (finalExercises.length === 0) return alert("Lägg till minst en övning!");
 
     try {
-      await axios.post(
-        "http://localhost:5000/api/workouts",
+      await axios.post("http://localhost:5000/api/workouts",
         { title, exercises: finalExercises },
-        { headers: { Authorization: `Bearer ${token}` } },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setTitle("");
       setExercises([]);
-      setSets(0); setReps(0); setWeight(0);
       onWorkoutAdded();
     } catch {
-      alert("Kunde inte spara passet. Kontrollera anslutningen.");
+      alert("Kunde inte spara passet.");
     }
   };
 
@@ -69,7 +87,7 @@ function AddWorkout({ onWorkoutAdded }: AddWorkoutProps) {
       <input
         className="title-input"
         type="text"
-        placeholder="Passets namn (t.ex. Överkropp)"
+        placeholder="Passets namn"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
@@ -78,53 +96,35 @@ function AddWorkout({ onWorkoutAdded }: AddWorkoutProps) {
       {exercises.length > 0 && (
         <div className="staged-exercises-list">
           {exercises.map((ex, i) => (
-            <div key={i} className="staged-item">
-              <strong>{ex.name}</strong>: {ex.sets}x{ex.reps} — {ex.weight}kg
+            <div key={i} className="staged-item-row">
+              <span className="ex-name">{ex.name}</span>
+              <div className="ex-inputs">
+                <input type="number" placeholder="Set" value={ex.sets || ""} onChange={e => updateStagedExercise(i, 'sets', Number(e.target.value))} />
+                <input type="number" placeholder="Reps" value={ex.reps || ""} onChange={e => updateStagedExercise(i, 'reps', Number(e.target.value))} />
+                <input type="number" placeholder="kg" value={ex.weight || ""} onChange={e => updateStagedExercise(i, 'weight', Number(e.target.value))} />
+                <button type="button" className="remove-btn" onClick={() => removeExercise(i)}>×</button>
+              </div>
             </div>
           ))}
         </div>
       )}
 
-      <div className="exercise-inputs-row">
-        <select
-          className="input-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        >
-          {library.length === 0 && <option value="">Skapa övningar först...</option>}
-          {library.map((ex) => (
-            <option key={ex._id} value={ex.name}>
-              {ex.name}
-            </option>
-          ))}
-        </select>
-
-        <input
-          type="number"
-          placeholder="Set"
-          value={sets || ""}
-          onChange={(e) => setSets(Number(e.target.value))}
-          className="input-small"
-        />
-        <input
-          type="number"
-          placeholder="Reps"
-          value={reps || ""}
-          onChange={(e) => setReps(Number(e.target.value))}
-          className="input-small"
-        />
-        <input
-          type="number"
-          placeholder="kg"
-          value={weight || ""}
-          onChange={(e) => setWeight(Number(e.target.value))}
-          className="input-small"
-        />
+      <div className="exercise-inputs-row divider">
+        <p>Lägg till extra övning:</p>
+        <div className="row-content">
+          <select className="input-name" value={name} onChange={(e) => setName(e.target.value)}>
+            {library.map((ex) => (
+              <option key={ex._id} value={ex.name}>{ex.name}</option>
+            ))}
+          </select>
+          <input type="number" placeholder="Set" value={sets || ""} onChange={e => setSets(Number(e.target.value))} className="input-small" />
+          <input type="number" placeholder="Reps" value={reps || ""} onChange={e => setReps(Number(e.target.value))} className="input-small" />
+          <input type="number" placeholder="kg" value={weight || ""} onChange={e => setWeight(Number(e.target.value))} className="input-small" />
+        </div>
       </div>
 
       <button type="button" className="add-exercise-btn" onClick={addExercise}>
-        + Lägg till övning i passet
+        + Lägg till i listan
       </button>
 
       <button type="submit" className="save-workout-btn">

@@ -33,8 +33,15 @@ function Header() {
               Statistik
             </Link>
 
-            <Link 
-              to="/exercises" 
+            <Link
+              to="/programs"
+              className={`nav-link ${location.pathname === "/programs" ? "active" : ""}`}
+            >
+              Program
+            </Link>
+
+            <Link
+              to="/exercises"
               className={`nav-link ${location.pathname === "/exercises" ? "active" : ""}`}
             >
               Övningar
