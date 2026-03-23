@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import AddWorkout from '../../components/AddWorkout/AddWorkout';
 import WorkoutCard from '../../components/WorkoutCard/WorkoutCard';
 import './Dashboard.scss';
 
-// Vi behåller dessa här så länge för att Dashboard ska veta vilken typ av data den hanterar
 interface Exercise {
   name: string;
   sets: number;
@@ -22,6 +22,9 @@ interface Workout {
 function Dashboard() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const username = localStorage.getItem('user') || 'Användare';
+  const location = useLocation();
+
+  const templateData = location.state as { templateExercises: string[], templateTitle: string } | null;
 
   const fetchWorkouts = async () => {
     const token = localStorage.getItem('token');
@@ -72,7 +75,10 @@ function Dashboard() {
         <h1>Hej {username}!</h1>
       </header>
 
-      <AddWorkout onWorkoutAdded={fetchWorkouts} />
+      <AddWorkout 
+        onWorkoutAdded={fetchWorkouts} 
+        templateData={templateData} 
+      />
 
       <section className="history-section">
         <h2>Din historik</h2>

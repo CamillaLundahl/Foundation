@@ -9,52 +9,128 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
   width: 100%;
 
-  h3 { margin-top: 0; color: $text-primary; font-size: 1.25rem; margin-bottom: 20px; }
+  h3 {
+    margin-top: 0;
+    color: $text-primary;
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+  }
 
   input, select {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid $border-color;
     border-radius: 8px;
-    padding: 12px;
+    padding: 10px;
     color: $text-primary;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     outline: none;
     transition: all 0.2s;
     min-width: 0;
-    &:focus { border-color: $accent-blue; background: rgba(255, 255, 255, 0.08); }
+
+    &:focus {
+      border-color: $accent-blue;
+      background: rgba(255, 255, 255, 0.08);
+    }
   }
 
-  select.input-name {
-    flex: 2.5;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px;
-    padding-right: 40px;
-    
-    option { background-color: $card-bg; color: $text-primary; }
+  .title-input {
+    width: 100%;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 12px;
   }
-
-  .title-input { width: 100%; margin-bottom: 16px; font-weight: 600; }
 
   .staged-exercises-list {
     background: rgba(0, 0, 0, 0.2);
     border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 20px;
-    border-left: 4px solid $accent-blue;
-    .staged-item { font-size: 0.9rem; color: $text-secondary; padding: 6px 0; border-bottom: 1px solid rgba($border-color, 0.5); &:last-child { border-bottom: none; } strong { color: $text-primary; } }
+    padding: 16px;
+    margin-bottom: 24px;
+    border: 1px solid $border-color;
+
+    .staged-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba($border-color, 0.5);
+      gap: 15px;
+
+      &:last-child { border-bottom: none; }
+
+      .ex-name {
+        flex: 1;
+        font-weight: 700;
+        color: $accent-blue;
+        font-size: 0.95rem;
+      }
+
+      .ex-inputs {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+
+        input {
+          width: 55px;
+          padding: 6px;
+          text-align: center;
+          background: rgba(255, 255, 255, 0.03);
+          
+          &::-webkit-inner-spin-button { -webkit-appearance: none; }
+        }
+
+        .remove-btn {
+          background: transparent;
+          border: none;
+          color: $accent-red;
+          font-size: 1.4rem;
+          cursor: pointer;
+          padding: 0 5px;
+          margin-left: 5px;
+          line-height: 1;
+          transition: transform 0.2s;
+          &:hover { color: white; transform: scale(1.2); }
+        }
+      }
+    }
   }
 
-  .exercise-inputs-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-    width: 100%;
-    align-items: center;
-    .input-small { flex: 1; text-align: left; padding: 12px 6px; }
+  .exercise-inputs-row.divider {
+    border-top: 1px solid $border-color;
+    padding-top: 20px;
+    margin-top: 20px;
+    
+    p { 
+      font-size: 0.8rem; 
+      color: $text-secondary; 
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .row-content {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      align-items: center;
+
+      .input-name {
+        flex: 2.5;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 14px;
+        padding-right: 30px;
+        
+        option { background-color: $card-bg; }
+      }
+
+      .input-small {
+        flex: 1;
+      }
+    }
   }
 
   .add-exercise-btn {
@@ -73,16 +149,25 @@
 
   .save-workout-btn {
     width: 100%;
-    padding: 14px;
+    padding: 16px;
     background: $accent-blue;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    font-weight: 700;
+    font-weight: 800;
     font-size: 1rem;
     transition: all 0.2s;
-    &:hover { background: color-mix(in srgb, $accent-blue, black 10%); }
-    &:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    &:hover {
+      background: color-mix(in srgb, $accent-blue, black 15%);
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
   }
 }
