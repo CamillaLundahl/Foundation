@@ -1,0 +1,78 @@
+@import '../../styles/variables';
+
+.add-workout-form {
+  background: $card-bg;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid $border-color;
+  margin-bottom: 32px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  width: 100%;
+
+  h3 {
+    margin-top: 0;
+    color: $text-primary;
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+  }
+
+  input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    padding: 12px;
+    color: $text-primary;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s;
+    min-width: 0; // Viktigt: tillåter inputen att krympa så pilarna får plats
+
+    &:focus {
+      border-color: $accent-blue;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    // Pilarna är nu tillbaka (standardbeteende)
+  }
+
+  .title-input {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .exercise-inputs-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    align-items: center;
+
+    .input-name { 
+      flex: 2.5; // Ger mer plats åt namnet
+    }
+    
+    .input-small { 
+      flex: 1; 
+      text-align: left; // Ändrat till vänster för att inte krocka med pilarna
+      padding-right: 2px; // Ger lite extra marginal för pilarna inuti rutan
+    }
+  }
+
+  .save-workout-btn {
+    width: 100%;
+    padding: 14px;
+    background: $accent-blue;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all 0.2s;
+
+    &:hover {
+      background: darken($accent-blue, 5%);
+      transform: translateY(-1px);
+    }
+  }
+}
