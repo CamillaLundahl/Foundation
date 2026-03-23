@@ -9,14 +9,9 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
   width: 100%;
 
-  h3 {
-    margin-top: 0;
-    color: $text-primary;
-    font-size: 1.25rem;
-    margin-bottom: 20px;
-  }
+  h3 { margin-top: 0; color: $text-primary; font-size: 1.25rem; margin-bottom: 20px; }
 
-  input {
+  input, select {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid $border-color;
     border-radius: 8px;
@@ -26,18 +21,23 @@
     outline: none;
     transition: all 0.2s;
     min-width: 0;
-
-    &:focus {
-      border-color: $accent-blue;
-      background: rgba(255, 255, 255, 0.08);
-    }
+    &:focus { border-color: $accent-blue; background: rgba(255, 255, 255, 0.08); }
   }
 
-  .title-input {
-    width: 100%;
-    margin-bottom: 16px;
-    font-weight: 600;
+  select.input-name {
+    flex: 2.5;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+    
+    option { background-color: $card-bg; color: $text-primary; }
   }
+
+  .title-input { width: 100%; margin-bottom: 16px; font-weight: 600; }
 
   .staged-exercises-list {
     background: rgba(0, 0, 0, 0.2);
@@ -45,21 +45,7 @@
     padding: 12px;
     margin-bottom: 20px;
     border-left: 4px solid $accent-blue;
-
-    .staged-item {
-      font-size: 0.9rem;
-      color: $text-secondary;
-      padding: 6px 0;
-      border-bottom: 1px solid rgba($border-color, 0.5);
-      
-      &:last-child {
-        border-bottom: none;
-      }
-
-      strong {
-        color: $text-primary;
-      }
-    }
+    .staged-item { font-size: 0.9rem; color: $text-secondary; padding: 6px 0; border-bottom: 1px solid rgba($border-color, 0.5); &:last-child { border-bottom: none; } strong { color: $text-primary; } }
   }
 
   .exercise-inputs-row {
@@ -68,16 +54,7 @@
     margin-bottom: 16px;
     width: 100%;
     align-items: center;
-
-    .input-name {
-      flex: 2.5;
-    }
-
-    .input-small {
-      flex: 1;
-      text-align: left;
-      padding: 12px 6px;
-    }
+    .input-small { flex: 1; text-align: left; padding: 12px 6px; }
   }
 
   .add-exercise-btn {
@@ -91,10 +68,7 @@
     font-weight: 600;
     margin-bottom: 20px;
     transition: all 0.2s;
-
-    &:hover {
-      background: rgba($accent-blue, 0.1);
-    }
+    &:hover { background: rgba($accent-blue, 0.1); }
   }
 
   .save-workout-btn {
@@ -108,15 +82,7 @@
     font-weight: 700;
     font-size: 1rem;
     transition: all 0.2s;
-
-    &:hover {
-      background: color-mix(in srgb, $accent-blue, black 10%);
-      transform: translateY(-1px);
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    &:hover { background: color-mix(in srgb, $accent-blue, black 10%); }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
   }
 }

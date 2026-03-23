@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import "./AddWorkout.scss";
 
@@ -9,16 +9,30 @@ interface AddWorkoutProps {
 function AddWorkout({ onWorkoutAdded }: AddWorkoutProps) {
   const [title, setTitle] = useState("");
   const [exercises, setExercises] = useState<any[]>([]);
+  const [library, setLibrary] = useState<any[]>([]);
   
   const [name, setName] = useState("");
   const [sets, setSets] = useState(0);
   const [reps, setReps] = useState(0);
   const [weight, setWeight] = useState(0);
 
+  useEffect(() => {
+    const fetchLibrary = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/exercises");
+        setLibrary(res.data);
+        if (res.data.length > 0) setName(res.data[0].name);
+      } catch {
+        console.error("Kunde inte hämta biblioteket");
+      }
+    };
+    fetchLibrary();
+  }, []);
+
   const addExercise = () => {
     if (name && sets > 0) {
       setExercises([...exercises, { name, sets, reps, weight }]);
-      setName(""); setSets(0); setReps(0); setWeight(0);
+      setSets(0); setReps(0); setWeight(0);
     }
   };
 
@@ -42,7 +56,7 @@ function AddWorkout({ onWorkoutAdded }: AddWorkoutProps) {
 
       setTitle("");
       setExercises([]);
-      setName(""); setSets(0); setReps(0); setWeight(0);
+      setSets(0); setReps(0); setWeight(0);
       onWorkoutAdded();
     } catch {
       alert("Kunde inte spara passet. Kontrollera anslutningen.");
@@ -72,13 +86,20 @@ function AddWorkout({ onWorkoutAdded }: AddWorkoutProps) {
       )}
 
       <div className="exercise-inputs-row">
-        <input
-          type="text"
-          placeholder="Övning"
+        <select
+          className="input-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="input-name"
-        />
+          required
+        >
+          {library.length === 0 && <option value="">Skapa övningar först...</option>}
+          {library.map((ex) => (
+            <option key={ex._id} value={ex.name}>
+              {ex.name}
+            </option>
+          ))}
+        </select>
+
         <input
           type="number"
           placeholder="Set"
