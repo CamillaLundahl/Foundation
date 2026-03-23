@@ -32,7 +32,11 @@ function Header() {
             <Link to="#" className="nav-link disabled">
               Statistik
             </Link>
-            <Link to="#" className="nav-link disabled">
+
+            <Link 
+              to="/exercises" 
+              className={`nav-link ${location.pathname === "/exercises" ? "active" : ""}`}
+            >
               Övningar
             </Link>
 

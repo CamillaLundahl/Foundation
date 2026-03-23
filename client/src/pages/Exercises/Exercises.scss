@@ -1,0 +1,72 @@
+@use "../../styles/variables" as *;
+
+.exercises-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+
+  h1 {
+    color: $text-primary;
+    margin-bottom: 30px;
+    font-size: 2rem;
+  }
+
+  .add-exercise-form {
+    display: flex;
+    gap: 12px;
+    background: $card-bg;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid $border-color;
+    margin-bottom: 40px;
+
+    input, select {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      padding: 10px;
+      color: white;
+      flex: 2;
+      outline: none;
+      &:focus { border-color: $accent-blue; }
+    }
+
+    select { flex: 1; cursor: pointer; }
+
+    button {
+      flex: 1;
+      background: $accent-blue;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      &:hover { opacity: 0.9; }
+    }
+  }
+
+  .exercise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+
+    .exercise-card {
+      background: $card-bg;
+      border: 1px solid $border-color;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      
+      h3 { margin: 0 0 8px 0; color: $text-primary; font-size: 1.1rem; }
+      .badge {
+        font-size: 0.7rem;
+        background: rgba($accent-blue, 0.1);
+        color: $accent-blue;
+        padding: 4px 10px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+    }
+  }
+}
