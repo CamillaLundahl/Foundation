@@ -12,16 +12,8 @@ export interface IWorkout extends Document {
 }
 
 const WorkoutSchema: Schema = new Schema({
-  // Kopplar passet till användarens unika ID
-  user: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true 
-  },
-  title: { 
-    type: String, 
-    required: true 
-  },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  title: { type: String, required: true },
   exercises: [
     {
       name: { type: String, required: true },

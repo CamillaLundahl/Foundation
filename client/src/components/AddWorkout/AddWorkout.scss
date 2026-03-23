@@ -1,4 +1,4 @@
-@import "../../styles/variables";
+@use "../../styles/variables" as *;
 
 .add-workout-form {
   background: $card-bg;
@@ -25,36 +25,75 @@
     font-size: 0.95rem;
     outline: none;
     transition: all 0.2s;
-    min-width: 0; // Viktigt: tillåter inputen att krympa så pilarna får plats
+    min-width: 0;
 
     &:focus {
       border-color: $accent-blue;
       background: rgba(255, 255, 255, 0.08);
     }
-
-    // Pilarna är nu tillbaka (standardbeteende)
   }
 
   .title-input {
     width: 100%;
     margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  .staged-exercises-list {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-left: 4px solid $accent-blue;
+
+    .staged-item {
+      font-size: 0.9rem;
+      color: $text-secondary;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba($border-color, 0.5);
+      
+      &:last-child {
+        border-bottom: none;
+      }
+
+      strong {
+        color: $text-primary;
+      }
+    }
   }
 
   .exercise-inputs-row {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     width: 100%;
     align-items: center;
 
     .input-name {
-      flex: 2.5; // Ger mer plats åt namnet
+      flex: 2.5;
     }
 
     .input-small {
       flex: 1;
-      text-align: left; // Ändrat till vänster för att inte krocka med pilarna
-      padding-right: 2px; // Ger lite extra marginal för pilarna inuti rutan
+      text-align: left;
+      padding: 12px 6px;
+    }
+  }
+
+  .add-exercise-btn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    color: $accent-blue;
+    border: 1px solid $accent-blue;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 20px;
+    transition: all 0.2s;
+
+    &:hover {
+      background: rgba($accent-blue, 0.1);
     }
   }
 
@@ -71,8 +110,13 @@
     transition: all 0.2s;
 
     &:hover {
-      background: darken($accent-blue, 5%);
+      background: color-mix(in srgb, $accent-blue, black 10%);
       transform: translateY(-1px);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   }
 }

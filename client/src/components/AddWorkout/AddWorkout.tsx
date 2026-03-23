@@ -8,41 +8,44 @@ interface AddWorkoutProps {
 
 function AddWorkout({ onWorkoutAdded }: AddWorkoutProps) {
   const [title, setTitle] = useState("");
+  const [exercises, setExercises] = useState<any[]>([]);
+  
   const [name, setName] = useState("");
   const [sets, setSets] = useState(0);
   const [reps, setReps] = useState(0);
   const [weight, setWeight] = useState(0);
 
+  const addExercise = () => {
+    if (name && sets > 0) {
+      setExercises([...exercises, { name, sets, reps, weight }]);
+      setName(""); setSets(0); setReps(0); setWeight(0);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
 
-    if (!token) {
-      alert("Du måste vara inloggad för att spara pass!");
+    const finalExercises = name ? [...exercises, { name, sets, reps, weight }] : exercises;
+
+    if (finalExercises.length === 0) {
+      alert("Lägg till minst en övning!");
       return;
     }
 
     try {
       await axios.post(
         "http://localhost:5000/api/workouts",
-        {
-          title,
-          exercises: [{ name, sets, reps, weight }],
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
+        { title, exercises: finalExercises },
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       setTitle("");
-      setName("");
-      setSets(0);
-      setReps(0);
-      setWeight(0);
-
+      setExercises([]);
+      setName(""); setSets(0); setReps(0); setWeight(0);
       onWorkoutAdded();
-    } catch (err) {
-      console.error("Kunde inte spara:", err);
+    } catch {
+      alert("Kunde inte spara passet. Kontrollera anslutningen.");
     }
   };
 
@@ -52,11 +55,21 @@ function AddWorkout({ onWorkoutAdded }: AddWorkoutProps) {
       <input
         className="title-input"
         type="text"
-        placeholder="Passets namn (t.ex. Benpass)"
+        placeholder="Passets namn (t.ex. Överkropp)"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
       />
+
+      {exercises.length > 0 && (
+        <div className="staged-exercises-list">
+          {exercises.map((ex, i) => (
+            <div key={i} className="staged-item">
+              <strong>{ex.name}</strong>: {ex.sets}x{ex.reps} — {ex.weight}kg
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="exercise-inputs-row">
         <input
@@ -64,7 +77,6 @@ function AddWorkout({ onWorkoutAdded }: AddWorkoutProps) {
           placeholder="Övning"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          required
           className="input-name"
         />
         <input
@@ -90,8 +102,12 @@ function AddWorkout({ onWorkoutAdded }: AddWorkoutProps) {
         />
       </div>
 
+      <button type="button" className="add-exercise-btn" onClick={addExercise}>
+        + Lägg till övning i passet
+      </button>
+
       <button type="submit" className="save-workout-btn">
-        Spara träningspass
+        Spara hela träningspasset
       </button>
     </form>
   );
