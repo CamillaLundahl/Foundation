@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import './Profile.scss';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import "./Profile.scss";
 
 function Profile() {
   const [stats, setStats] = useState({ totalWorkouts: 0, totalVolume: 0 });
-  const username = localStorage.getItem('user');
+  const username = localStorage.getItem("user");
 
   useEffect(() => {
     const fetchStats = async () => {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/workouts/stats', {
-        headers: { Authorization: `Bearer ${token}` }
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:5000/api/workouts/stats", {
+        headers: { Authorization: `Bearer ${token}` },
       });
       setStats(res.data);
     };
