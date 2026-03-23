@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import AddWorkout from '../../components/AddWorkout';
+import AddWorkout from '../../components/AddWorkout/AddWorkout';
 import './Dashboard.scss';
 
 interface Exercise {
