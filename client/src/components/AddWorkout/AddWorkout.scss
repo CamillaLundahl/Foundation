@@ -1,4 +1,4 @@
-@import '../../styles/variables';
+@import "../../styles/variables";
 
 .add-workout-form {
   background: $card-bg;
@@ -31,7 +31,7 @@
       border-color: $accent-blue;
       background: rgba(255, 255, 255, 0.08);
     }
-    
+
     // Pilarna är nu tillbaka (standardbeteende)
   }
 
@@ -47,12 +47,12 @@
     width: 100%;
     align-items: center;
 
-    .input-name { 
+    .input-name {
       flex: 2.5; // Ger mer plats åt namnet
     }
-    
-    .input-small { 
-      flex: 1; 
+
+    .input-small {
+      flex: 1;
       text-align: left; // Ändrat till vänster för att inte krocka med pilarna
       padding-right: 2px; // Ger lite extra marginal för pilarna inuti rutan
     }
