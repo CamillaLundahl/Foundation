@@ -1,37 +1,44 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import "./Login.scss";
+import "../Login/Login.scss";
 
-function Login() {
+function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      return alert("Lösenorden matchar inte!");
+    }
+
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+      const res = await axios.post("http://localhost:5000/api/auth/register", {
         username,
         password,
       });
+      
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", res.data.username);
+      
       navigate("/dashboard");
     } catch {
-      alert("Inloggning misslyckades. Kontrollera användarnamn och lösenord.");
+      alert("Registrering misslyckades. Användarnamnet kan vara upptaget.");
     }
   };
 
   return (
     <div className="login-container">
-      <h1>Foundation</h1>
-      <p>Logga in för att hantera din träning</p>
-      <form onSubmit={handleLogin} className="login-form">
+      <h1>Skapa konto</h1>
+      <p>Börja din resa med Foundation idag</p>
+      <form onSubmit={handleRegister} className="login-form">
         <div className="input-group">
-          <label htmlFor="username">Användarnamn</label>
+          <label>Användarnamn</label>
           <input
-            id="username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -39,25 +46,32 @@ function Login() {
           />
         </div>
         <div className="input-group">
-          <label htmlFor="password">Lösenord</label>
+          <label>Lösenord</label>
           <input
-            id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
+        <div className="input-group">
+          <label>Bekräfta lösenord</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+        </div>
         <button type="submit" className="login-button">
-          Logga in
+          Registrera dig
         </button>
-
         <p className="switch-auth">
-          Inget konto? <Link to="/register">Skapa ett här</Link>
+          Har du redan ett konto? <Link to="/">Logga in här</Link>
         </p>
       </form>
     </div>
   );
 }
 
-export default Login;
+export default Register;

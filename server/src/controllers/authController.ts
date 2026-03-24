@@ -8,16 +8,30 @@ export const register = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
-    // Kryptera lösenordet
+    // 1. Kryptera lösenordet
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // 2. Skapa den nya användaren
     const newUser = new User({
       username,
       password: hashedPassword
     });
 
     await newUser.save();
-    res.status(201).json({ message: 'Användare skapad!' });
+
+    // 3. Skapa en JWT-token direkt (logga in användaren automatiskt)
+    const token = jwt.sign(
+      { id: newUser._id }, 
+      process.env.JWT_SECRET || 'hemlighet', 
+      { expiresIn: '30d' }
+    );
+
+    // 4. Skicka tillbaka token och användarnamn
+    res.status(201).json({ 
+      token, 
+      username: newUser.username,
+      message: 'Användare skapad och inloggad!' 
+    });
   } catch (error) {
     res.status(500).json({ message: 'Kunde inte skapa användare (namnet kan vara upptaget)' });
   }
@@ -28,23 +42,20 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
-    // Hitta användaren
     const user: any = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
     }
 
-    // Jämför lösenordet med det krypterade i databasen
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
     }
 
-    // Skapa en JWT-token (din inloggningsnyckel)
     const token = jwt.sign(
       { id: user._id }, 
       process.env.JWT_SECRET || 'hemlighet', 
-      { expiresIn: '1h' }
+      { expiresIn: '30d' }
     );
 
     res.json({ token, username: user.username });

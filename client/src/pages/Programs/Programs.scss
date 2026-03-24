@@ -5,8 +5,18 @@
   margin: 40px auto;
   padding: 0 20px;
 
-  h1 { color: $text-primary; margin-bottom: 32px; font-size: 2.2rem; }
-  h3 { color: $text-secondary; margin-bottom: 16px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
+  h1 {
+    color: $text-primary;
+    margin-bottom: 32px;
+    font-size: 2.2rem;
+  }
+  h3 {
+    color: $text-secondary;
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
   .create-program-section {
     background: $card-bg;
@@ -14,11 +24,11 @@
     border-radius: 20px;
     border: 1px solid $border-color;
     margin-bottom: 50px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 
     input {
       width: 100%;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid $border-color;
       padding: 14px;
       border-radius: 10px;
@@ -26,7 +36,9 @@
       margin-bottom: 24px;
       font-size: 1rem;
       outline: none;
-      &:focus { border-color: $accent-blue; }
+      &:focus {
+        border-color: $accent-blue;
+      }
     }
   }
 
@@ -79,7 +91,10 @@
     font-size: 1rem;
     cursor: pointer;
     transition: transform 0.2s;
-    &:hover { opacity: 0.9; transform: translateY(-1px); }
+    &:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
   }
 
   .grid {
@@ -96,7 +111,10 @@
       flex-direction: column;
       transition: border-color 0.3s;
 
-      &.editing { border-color: $accent-blue; box-shadow: 0 0 15px rgba($accent-blue, 0.1); }
+      &.editing {
+        border-color: $accent-blue;
+        box-shadow: 0 0 15px rgba($accent-blue, 0.1);
+      }
 
       .card-header-row {
         display: flex;
@@ -104,47 +122,93 @@
         align-items: center;
         margin-bottom: 15px;
 
-        h4 { color: $text-primary; margin: 0; font-size: 1.2rem; }
+        h4 {
+          color: $text-primary;
+          margin: 0;
+          font-size: 1.2rem;
+        }
         .header-btns {
           display: flex;
           gap: 12px;
           .icon-btn {
-            background: transparent; border: none; color: $text-secondary;
-            cursor: pointer; font-size: 1.2rem; transition: color 0.2s;
-            &:hover { color: $accent-blue; }
-            &.delete:hover { color: $accent-red; }
+            background: transparent;
+            border: none;
+            color: $text-secondary;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+            &:hover {
+              color: $accent-blue;
+            }
+            &.delete:hover {
+              color: $accent-red;
+            }
           }
         }
       }
 
       ul {
-        list-style: none; padding: 0; margin: 0; flex-grow: 1;
-        li { 
-          font-size: 0.95rem; color: $text-secondary; padding: 8px 0; 
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        flex-grow: 1;
+        li {
+          font-size: 0.95rem;
+          color: $text-secondary;
+          padding: 8px 0;
           border-bottom: 1px solid rgba($border-color, 0.4);
-          &:last-child { border-bottom: none; }
+          &:last-child {
+            border-bottom: none;
+          }
         }
       }
 
       .start-btn {
-        width: 100%; margin-top: 20px;
-        background: $accent-blue; color: white;
-        border: none; padding: 12px; border-radius: 10px;
-        font-weight: 700; cursor: pointer;
-        &:hover { background: color-mix(in srgb, $accent-blue, black 10%); }
+        width: 100%;
+        margin-top: 20px;
+        background: $accent-blue;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        &:hover {
+          background: color-mix(in srgb, $accent-blue, black 10%);
+        }
       }
 
       .edit-mode {
-        display: flex; flex-direction: column; gap: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
         .edit-title-input {
-          background: rgba(255,255,255,0.05); border: 1px solid $accent-blue;
-          color: white; padding: 10px; border-radius: 8px; outline: none;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid $accent-blue;
+          color: white;
+          padding: 10px;
+          border-radius: 8px;
+          outline: none;
         }
         .edit-actions {
-          display: flex; gap: 10px;
-          button { flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: 700; }
-          .confirm-btn { background: $accent-blue; color: white; }
-          .cancel-btn { background: rgba($text-secondary, 0.2); color: white; }
+          display: flex;
+          gap: 10px;
+          button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+          }
+          .confirm-btn {
+            background: $accent-blue;
+            color: white;
+          }
+          .cancel-btn {
+            background: rgba($text-secondary, 0.2);
+            color: white;
+          }
         }
       }
     }

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import './WorkoutCard.scss';
+import { useState } from "react";
+import "./WorkoutCard.scss";
 
 interface Exercise {
   name: string;
@@ -18,7 +18,10 @@ interface Workout {
 interface WorkoutCardProps {
   workout: Workout;
   onDelete: (id: string) => void;
-  onUpdate: (id: string, updatedData: { title: string; exercises: Exercise[] }) => void;
+  onUpdate: (
+    id: string,
+    updatedData: { title: string; exercises: Exercise[] },
+  ) => void;
 }
 
 function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
@@ -26,11 +29,15 @@ function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
   const [editTitle, setEditTitle] = useState(workout.title);
   const [editExercises, setEditExercises] = useState([...workout.exercises]);
 
-  const handleExerciseChange = (index: number, field: keyof Exercise, value: string | number) => {
+  const handleExerciseChange = (
+    index: number,
+    field: keyof Exercise,
+    value: string | number,
+  ) => {
     const updated = [...editExercises];
-    updated[index] = { 
-      ...updated[index], 
-      [field]: field === 'name' ? value : Number(value) 
+    updated[index] = {
+      ...updated[index],
+      [field]: field === "name" ? value : Number(value),
     };
     setEditExercises(updated);
   };
@@ -44,49 +51,89 @@ function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
     <div className="workout-card">
       <div className="card-header">
         {isEditing ? (
-          <input 
+          <input
             className="edit-title-input"
-            value={editTitle} 
+            value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
             autoFocus
           />
         ) : (
           <h3>{workout.title}</h3>
         )}
-        
+
         <div className="card-actions">
           {isEditing ? (
             <>
-              <button onClick={handleSave} className="save-btn">Spara</button>
-              <button onClick={() => setIsEditing(false)} className="cancel-btn">Avbryt</button>
+              <button onClick={handleSave} className="save-btn">
+                Spara
+              </button>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="cancel-btn"
+              >
+                Avbryt
+              </button>
             </>
           ) : (
             <>
-              <button onClick={() => setIsEditing(true)} className="edit-btn">Ändra</button>
-              <button onClick={() => onDelete(workout._id)} className="delete-button">Radera</button>
+              <button onClick={() => setIsEditing(true)} className="edit-btn">
+                Ändra
+              </button>
+              <button
+                onClick={() => onDelete(workout._id)}
+                className="delete-button"
+              >
+                Radera
+              </button>
             </>
           )}
         </div>
       </div>
-      
+
       <span className="workout-date">
         {new Date(workout.createdAt).toLocaleDateString()}
       </span>
 
       <ul className="exercise-list">
         {(isEditing ? editExercises : workout.exercises).map((ex, i) => (
-          <li key={i} className={isEditing ? 'edit-row' : ''}>
+          <li key={i} className={isEditing ? "edit-row" : ""}>
             {isEditing ? (
               <div className="edit-exercise-inputs">
-                <input type="text" value={ex.name} onChange={(e) => handleExerciseChange(i, 'name', e.target.value)} />
-                <input type="number" value={ex.sets} onChange={(e) => handleExerciseChange(i, 'sets', e.target.value)} />
+                <input
+                  type="text"
+                  value={ex.name}
+                  onChange={(e) =>
+                    handleExerciseChange(i, "name", e.target.value)
+                  }
+                />
+                <input
+                  type="number"
+                  value={ex.sets}
+                  onChange={(e) =>
+                    handleExerciseChange(i, "sets", e.target.value)
+                  }
+                />
                 <span>x</span>
-                <input type="number" value={ex.reps} onChange={(e) => handleExerciseChange(i, 'reps', e.target.value)} />
-                <input type="number" value={ex.weight} onChange={(e) => handleExerciseChange(i, 'weight', e.target.value)} />
+                <input
+                  type="number"
+                  value={ex.reps}
+                  onChange={(e) =>
+                    handleExerciseChange(i, "reps", e.target.value)
+                  }
+                />
+                <input
+                  type="number"
+                  value={ex.weight}
+                  onChange={(e) =>
+                    handleExerciseChange(i, "weight", e.target.value)
+                  }
+                />
                 <span>kg</span>
               </div>
             ) : (
-              <p><strong>{ex.name}:</strong> {ex.sets}x{ex.reps} — {ex.weight}kg</p>
+              <p>
+                <strong>{ex.name}:</strong> {ex.sets}x{ex.reps} — {ex.weight}kg
+              </p>
             )}
           </li>
         ))}

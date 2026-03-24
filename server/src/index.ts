@@ -5,7 +5,7 @@ import { connectDB } from "./config/db";
 import authRoutes from "./routes/authRoutes";
 import workoutRoutes from "./routes/workoutRoutes";
 import exerciseRoutes from "./routes/exerciseRoutes";
-import programRoutes from './routes/programRoutes';
+import programRoutes from "./routes/programRoutes";
 
 dotenv.config();
 connectDB();
@@ -18,7 +18,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/workouts", workoutRoutes);
 app.use("/api/exercises", exerciseRoutes);
-app.use('/api/programs', programRoutes);
+app.use("/api/programs", programRoutes);
 
 app.get("/", (req, res) => {
   res.send("Foundation API rullar!");

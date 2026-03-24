@@ -34,23 +34,22 @@ export const getWorkoutStats = async (req: any, res: Response) => {
     const workouts = await Workout.find({ user: req.user.id });
 
     const totalWorkouts = workouts.length;
-    
+
     let totalVolume = 0;
-    workouts.forEach(workout => {
-      workout.exercises.forEach(ex => {
-        totalVolume += (ex.weight * ex.reps * ex.sets);
+    workouts.forEach((workout) => {
+      workout.exercises.forEach((ex) => {
+        totalVolume += ex.weight * ex.reps * ex.sets;
       });
     });
 
     res.status(200).json({
       totalWorkouts,
-      totalVolume
+      totalVolume,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Kunde inte hämta statistik' });
+    res.status(500).json({ message: "Kunde inte hämta statistik" });
   }
 };
-
 
 export const updateWorkout = async (req: any, res: Response) => {
   try {

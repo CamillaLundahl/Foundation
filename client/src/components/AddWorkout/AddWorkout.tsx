@@ -4,14 +4,14 @@ import "./AddWorkout.scss";
 
 interface AddWorkoutProps {
   onWorkoutAdded: () => void;
-  templateData?: { templateExercises: string[], templateTitle: string } | null;
+  templateData?: { templateExercises: string[]; templateTitle: string } | null;
 }
 
 function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
   const [title, setTitle] = useState("");
   const [exercises, setExercises] = useState<any[]>([]);
   const [library, setLibrary] = useState<any[]>([]);
-  
+
   const [name, setName] = useState("");
   const [sets, setSets] = useState(0);
   const [reps, setReps] = useState(0);
@@ -33,17 +33,23 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
   useEffect(() => {
     if (templateData) {
       setTitle(templateData.templateTitle);
-      const preparedExercises = templateData.templateExercises.map(exName => ({
-        name: exName,
-        sets: 0,
-        reps: 0,
-        weight: 0
-      }));
+      const preparedExercises = templateData.templateExercises.map(
+        (exName) => ({
+          name: exName,
+          sets: 0,
+          reps: 0,
+          weight: 0,
+        }),
+      );
       setExercises(preparedExercises);
     }
   }, [templateData]);
 
-  const updateStagedExercise = (index: number, field: string, value: number) => {
+  const updateStagedExercise = (
+    index: number,
+    field: string,
+    value: number,
+  ) => {
     const updated = [...exercises];
     updated[index] = { ...updated[index], [field]: value };
     setExercises(updated);
@@ -56,22 +62,28 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
   const addExercise = () => {
     if (name) {
       setExercises([...exercises, { name, sets, reps, weight }]);
-      setSets(0); setReps(0); setWeight(0);
+      setSets(0);
+      setReps(0);
+      setWeight(0);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-    
-    const finalExercises = name && sets > 0 ? [...exercises, { name, sets, reps, weight }] : exercises;
+
+    const finalExercises =
+      name && sets > 0
+        ? [...exercises, { name, sets, reps, weight }]
+        : exercises;
 
     if (finalExercises.length === 0) return alert("Lägg till minst en övning!");
 
     try {
-      await axios.post("http://localhost:5000/api/workouts",
+      await axios.post(
+        "http://localhost:5000/api/workouts",
         { title, exercises: finalExercises },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       setTitle("");
       setExercises([]);
@@ -99,10 +111,37 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
             <div key={i} className="staged-item-row">
               <span className="ex-name">{ex.name}</span>
               <div className="ex-inputs">
-                <input type="number" placeholder="Set" value={ex.sets || ""} onChange={e => updateStagedExercise(i, 'sets', Number(e.target.value))} />
-                <input type="number" placeholder="Reps" value={ex.reps || ""} onChange={e => updateStagedExercise(i, 'reps', Number(e.target.value))} />
-                <input type="number" placeholder="kg" value={ex.weight || ""} onChange={e => updateStagedExercise(i, 'weight', Number(e.target.value))} />
-                <button type="button" className="remove-btn" onClick={() => removeExercise(i)}>×</button>
+                <input
+                  type="number"
+                  placeholder="Set"
+                  value={ex.sets || ""}
+                  onChange={(e) =>
+                    updateStagedExercise(i, "sets", Number(e.target.value))
+                  }
+                />
+                <input
+                  type="number"
+                  placeholder="Reps"
+                  value={ex.reps || ""}
+                  onChange={(e) =>
+                    updateStagedExercise(i, "reps", Number(e.target.value))
+                  }
+                />
+                <input
+                  type="number"
+                  placeholder="kg"
+                  value={ex.weight || ""}
+                  onChange={(e) =>
+                    updateStagedExercise(i, "weight", Number(e.target.value))
+                  }
+                />
+                <button
+                  type="button"
+                  className="remove-btn"
+                  onClick={() => removeExercise(i)}
+                >
+                  ×
+                </button>
               </div>
             </div>
           ))}
@@ -112,14 +151,38 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
       <div className="exercise-inputs-row divider">
         <p>Lägg till extra övning:</p>
         <div className="row-content">
-          <select className="input-name" value={name} onChange={(e) => setName(e.target.value)}>
+          <select
+            className="input-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          >
             {library.map((ex) => (
-              <option key={ex._id} value={ex.name}>{ex.name}</option>
+              <option key={ex._id} value={ex.name}>
+                {ex.name}
+              </option>
             ))}
           </select>
-          <input type="number" placeholder="Set" value={sets || ""} onChange={e => setSets(Number(e.target.value))} className="input-small" />
-          <input type="number" placeholder="Reps" value={reps || ""} onChange={e => setReps(Number(e.target.value))} className="input-small" />
-          <input type="number" placeholder="kg" value={weight || ""} onChange={e => setWeight(Number(e.target.value))} className="input-small" />
+          <input
+            type="number"
+            placeholder="Set"
+            value={sets || ""}
+            onChange={(e) => setSets(Number(e.target.value))}
+            className="input-small"
+          />
+          <input
+            type="number"
+            placeholder="Reps"
+            value={reps || ""}
+            onChange={(e) => setReps(Number(e.target.value))}
+            className="input-small"
+          />
+          <input
+            type="number"
+            placeholder="kg"
+            value={weight || ""}
+            onChange={(e) => setWeight(Number(e.target.value))}
+            className="input-small"
+          />
         </div>
       </div>
 
