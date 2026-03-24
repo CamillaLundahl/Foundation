@@ -2,20 +2,28 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Exercises.scss";
 
+const MUSCLE_GROUPS = ["Ben", "Rygg", "Bröst", "Axlar", "Armar", "Mage"];
+
 interface Exercise {
   _id: string;
   name: string;
   muscleGroup: string;
+  isBodyweight: boolean;
 }
 
 function Exercises() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
-  const [newName, setNewName] = useState("");
-  const [newMuscleGroup, setNewMuscleGroup] = useState("Ben");
+  const [name, setName] = useState("");
+  const [muscleGroup, setMuscleGroup] = useState("Ben");
+  const [isBodyweight, setIsBodyweight] = useState(false);
 
   const fetchExercises = async () => {
-    const res = await axios.get("http://localhost:5000/api/exercises");
-    setExercises(res.data);
+    try {
+      const { data } = await axios.get("http://localhost:5000/api/exercises");
+      setExercises(data);
+    } catch (err) {
+      console.error("Kunde inte hämta övningar");
+    }
   };
 
   useEffect(() => {
@@ -26,10 +34,12 @@ function Exercises() {
     e.preventDefault();
     try {
       await axios.post("http://localhost:5000/api/exercises", {
-        name: newName,
-        muscleGroup: newMuscleGroup,
+        name,
+        muscleGroup,
+        isBodyweight,
       });
-      setNewName("");
+      setName("");
+      setIsBodyweight(false);
       fetchExercises();
     } catch {
       alert("Fel vid sparning");
@@ -42,22 +52,33 @@ function Exercises() {
 
       <form onSubmit={handleSubmit} className="add-exercise-form">
         <input
+          type="text"
           placeholder="Övningsnamn"
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           required
         />
+
         <select
-          value={newMuscleGroup}
-          onChange={(e) => setNewMuscleGroup(e.target.value)}
+          value={muscleGroup}
+          onChange={(e) => setMuscleGroup(e.target.value)}
         >
-          <option value="Ben">Ben</option>
-          <option value="Rygg">Rygg</option>
-          <option value="Bröst">Bröst</option>
-          <option value="Axlar">Axlar</option>
-          <option value="Armar">Armar</option>
-          <option value="Mage">Mage</option>
+          {MUSCLE_GROUPS.map((group) => (
+            <option key={group} value={group}>
+              {group}
+            </option>
+          ))}
         </select>
+
+        <label className="checkbox-container">
+          <input
+            type="checkbox"
+            checked={isBodyweight}
+            onChange={(e) => setIsBodyweight(e.target.checked)}
+          />
+          Kroppsvikt
+        </label>
+
         <button type="submit">Skapa övning</button>
       </form>
 
@@ -65,7 +86,10 @@ function Exercises() {
         {exercises.map((ex) => (
           <div key={ex._id} className="exercise-card">
             <h3>{ex.name}</h3>
-            <span className="badge">{ex.muscleGroup}</span>
+            <div className="badge-row">
+              <span className="badge">{ex.muscleGroup}</span>
+              {ex.isBodyweight && <span className="badge bw">Kroppsvikt</span>}
+            </div>
           </div>
         ))}
       </div>
