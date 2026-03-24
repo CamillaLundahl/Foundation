@@ -1,4 +1,4 @@
-@import "../../styles/variables";
+@use "../../styles/variables" as *;
 
 .login-container {
   display: flex;
@@ -73,8 +73,26 @@
       transition: all 0.2s;
 
       &:hover {
-        background: darken($accent-blue, 10%);
+        background: color-mix(in srgb, $accent-blue, black 15%);
         transform: translateY(-1px);
+      }
+    }
+
+    .switch-auth {
+      margin-top: 10px;
+      margin-bottom: 0;
+      font-size: 0.9rem;
+      text-align: center;
+      color: $text-secondary;
+
+      a {
+        color: $accent-blue;
+        text-decoration: none;
+        font-weight: 700;
+        margin-left: 5px;
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }

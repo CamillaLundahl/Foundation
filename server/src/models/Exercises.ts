@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IExercise extends Document {
   name: string;
@@ -7,7 +7,7 @@ export interface IExercise extends Document {
 
 const ExerciseSchema: Schema = new Schema({
   name: { type: String, required: true, unique: true },
-  muscleGroup: { type: String, required: true }
+  muscleGroup: { type: String, required: true },
 });
 
-export default mongoose.model<IExercise>('Exercise', ExerciseSchema);
+export default mongoose.model<IExercise>("Exercise", ExerciseSchema);

@@ -20,7 +20,8 @@
     border: 1px solid $border-color;
     margin-bottom: 40px;
 
-    input, select {
+    input,
+    select {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid $border-color;
       border-radius: 8px;
@@ -28,10 +29,15 @@
       color: white;
       flex: 2;
       outline: none;
-      &:focus { border-color: $accent-blue; }
+      &:focus {
+        border-color: $accent-blue;
+      }
     }
 
-    select { flex: 1; cursor: pointer; }
+    select {
+      flex: 1;
+      cursor: pointer;
+    }
 
     button {
       flex: 1;
@@ -41,7 +47,9 @@
       border-radius: 8px;
       font-weight: 700;
       cursor: pointer;
-      &:hover { opacity: 0.9; }
+      &:hover {
+        opacity: 0.9;
+      }
     }
   }
 
@@ -56,8 +64,12 @@
       padding: 20px;
       border-radius: 12px;
       text-align: center;
-      
-      h3 { margin: 0 0 8px 0; color: $text-primary; font-size: 1.1rem; }
+
+      h3 {
+        margin: 0 0 8px 0;
+        color: $text-primary;
+        font-size: 1.1rem;
+      }
       .badge {
         font-size: 0.7rem;
         background: rgba($accent-blue, 0.1);
