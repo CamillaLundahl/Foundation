@@ -5,45 +5,37 @@ import AddWorkout from "../../components/AddWorkout/AddWorkout";
 import WorkoutCard from "../../components/WorkoutCard/WorkoutCard";
 import "./Dashboard.scss";
 
-interface Exercise {
-  name: string;
-  sets: number;
-  reps: number;
-  weight: number;
-}
-
-interface Workout {
-  _id: string;
-  title: string;
-  exercises: Exercise[];
-  createdAt: string;
-}
-
 function Dashboard() {
-  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [workouts, setWorkouts] = useState<any[]>([]);
+
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   const username = localStorage.getItem("user") || "Användare";
   const location = useLocation();
+  const templateData = location.state as any;
 
-  const templateData = location.state as {
-    templateExercises: string[];
-    templateTitle: string;
-  } | null;
-
-  const fetchWorkouts = async () => {
+  const fetchWorkouts = async (pageNumber: number) => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.get("http://localhost:5000/api/workouts", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setWorkouts(res.data);
+      const res = await axios.get(
+        `http://localhost:5000/api/workouts?page=${pageNumber}&limit=5`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      setWorkouts(res.data.workouts);
+      setTotalPages(res.data.totalPages);
+      setPage(res.data.currentPage);
     } catch {
       console.error("Kunde inte hämta pass");
     }
   };
 
   useEffect(() => {
-    fetchWorkouts();
-  }, []);
+    fetchWorkouts(page);
+  }, [page]);
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Vill du verkligen ta bort detta pass?")) {
@@ -52,23 +44,20 @@ function Dashboard() {
         await axios.delete(`http://localhost:5000/api/workouts/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        fetchWorkouts();
+        fetchWorkouts(page);
       } catch {
         alert("Kunde inte radera passet");
       }
     }
   };
 
-  const handleUpdate = async (
-    id: string,
-    updatedData: { title: string; exercises: Exercise[] },
-  ) => {
+  const handleUpdate = async (id: string, updatedData: any) => {
     const token = localStorage.getItem("token");
     try {
       await axios.put(`http://localhost:5000/api/workouts/${id}`, updatedData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      fetchWorkouts();
+      fetchWorkouts(page);
     } catch {
       alert("Kunde inte uppdatera passet");
     }
@@ -80,7 +69,10 @@ function Dashboard() {
         <h1>Hej {username}!</h1>
       </header>
 
-      <AddWorkout onWorkoutAdded={fetchWorkouts} templateData={templateData} />
+      <AddWorkout
+        onWorkoutAdded={() => fetchWorkouts(1)}
+        templateData={templateData}
+      />
 
       <section className="history-section">
         <h2>Din historik</h2>
@@ -98,6 +90,30 @@ function Dashboard() {
             ))
           )}
         </div>
+
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((prev) => prev - 1)}
+              className="pag-btn"
+            >
+              &larr; Föregående
+            </button>
+
+            <span className="page-info">
+              Sida {page} av {totalPages}
+            </span>
+
+            <button
+              disabled={page === totalPages}
+              onClick={() => setPage((prev) => prev + 1)}
+              className="pag-btn"
+            >
+              Nästa &rarr;
+            </button>
+          </div>
+        )}
       </section>
     </div>
   );

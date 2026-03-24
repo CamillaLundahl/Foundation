@@ -6,6 +6,7 @@ import "./Programs.scss";
 interface Exercise {
   _id: string;
   name: string;
+  muscleGroup: string;
 }
 
 interface Program {
@@ -17,14 +18,19 @@ interface Program {
 function Programs() {
   const [library, setLibrary] = useState<Exercise[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
+
+  const [exSearch, setExSearch] = useState("");
+  const [exCategory, setExCategory] = useState("Alla");
+
   const [title, setTitle] = useState("");
   const [selectedExercises, setSelectedExercises] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  // State för redigering
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editExercises, setEditExercises] = useState<string[]>([]);
+
+  const categories = ["Alla", "Ben", "Bröst", "Rygg", "Axlar", "Armar", "Mage"];
 
   const fetchData = async () => {
     const token = localStorage.getItem("token");
@@ -45,7 +51,17 @@ function Programs() {
     fetchData();
   }, []);
 
-  // Hanterar val av övningar för både "Skapa ny" och "Redigera"
+  const filteredLibrary = library
+    .filter((ex) => {
+      const matchesSearch = ex.name
+        .toLowerCase()
+        .includes(exSearch.toLowerCase());
+      const matchesCategory =
+        exCategory === "Alla" || ex.muscleGroup === exCategory;
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
+
   const toggleExercise = (name: string, isEdit: boolean = false) => {
     if (isEdit) {
       setEditExercises((prev) =>
@@ -93,12 +109,12 @@ function Programs() {
       setEditingId(null);
       fetchData();
     } catch {
-      alert("Kunde inte uppdatera programmet.");
+      alert("Kunde inte uppdatera.");
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Vill du verkligen ta bort detta program?")) return;
+    if (!window.confirm("Ta bort programmet?")) return;
     const token = localStorage.getItem("token");
     try {
       await axios.delete(`http://localhost:5000/api/programs/${id}`, {
@@ -106,7 +122,7 @@ function Programs() {
       });
       fetchData();
     } catch {
-      alert("Kunde inte radera programmet.");
+      alert("Kunde inte radera.");
     }
   };
 
@@ -121,18 +137,41 @@ function Programs() {
       <h1>Träningsprogram</h1>
 
       <section className="create-program-section">
-        <h3>Skapa ny mall</h3>
+        <h3>Skapa nytt program</h3>
         <form onSubmit={handleCreateProgram}>
           <input
+            className="main-input"
             placeholder="Namn (t.ex. Push Day)"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
           />
-          <div className="exercise-selector">
-            <p>Välj övningar:</p>
+
+          <div className="exercise-selector-box">
+            <header className="selector-header">
+              <span>Välj övningar ({selectedExercises.length} valda):</span>
+              <div className="selector-controls">
+                <input
+                  type="text"
+                  placeholder="Sök övning..."
+                  value={exSearch}
+                  onChange={(e) => setExSearch(e.target.value)}
+                />
+                <select
+                  value={exCategory}
+                  onChange={(e) => setExCategory(e.target.value)}
+                >
+                  {categories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </header>
+
             <div className="chip-grid">
-              {library.map((ex) => (
+              {filteredLibrary.map((ex) => (
                 <button
                   key={ex._id}
                   type="button"
@@ -142,6 +181,9 @@ function Programs() {
                   {ex.name}
                 </button>
               ))}
+              {filteredLibrary.length === 0 && (
+                <p className="no-res">Inga övningar matchar sökningen.</p>
+              )}
             </div>
           </div>
           <button type="submit" className="save-btn">
@@ -165,8 +207,18 @@ function Programs() {
                     onChange={(e) => setEditTitle(e.target.value)}
                     className="edit-title-input"
                   />
+
+                  <div className="selector-controls small">
+                    <input
+                      type="text"
+                      placeholder="Sök..."
+                      value={exSearch}
+                      onChange={(e) => setExSearch(e.target.value)}
+                    />
+                  </div>
+
                   <div className="chip-grid small">
-                    {library.map((ex) => (
+                    {filteredLibrary.map((ex) => (
                       <button
                         key={ex._id}
                         type="button"
