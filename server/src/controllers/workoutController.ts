@@ -20,12 +20,26 @@ export const createWorkout = async (req: any, res: Response) => {
 
 export const getWorkouts = async (req: any, res: Response) => {
   try {
-    const workouts = await Workout.find({ user: req.user.id }).sort({
-      createdAt: -1,
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 5;
+
+    const skip = (page - 1) * limit;
+
+    const workouts = await Workout.find({ user: req.user.id })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalWorkouts = await Workout.countDocuments({ user: req.user.id });
+
+    res.json({
+      workouts,
+      totalPages: Math.ceil(totalWorkouts / limit),
+      currentPage: page,
+      totalWorkouts,
     });
-    res.status(200).json(workouts);
   } catch (error) {
-    res.status(500).json({ message: "Kunde inte hämta träningspassen" });
+    res.status(500).json({ message: "Kunde inte hämta träningspass" });
   }
 };
 
