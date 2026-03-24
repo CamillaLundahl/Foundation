@@ -7,6 +7,7 @@ import "./Dashboard.scss";
 
 function Dashboard() {
   const [workouts, setWorkouts] = useState<any[]>([]);
+  const [streak, setStreak] = useState(0); // Nytt state för streak
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -15,26 +16,32 @@ function Dashboard() {
   const location = useLocation();
   const templateData = location.state as any;
 
-  const fetchWorkouts = async (pageNumber: number) => {
+  // Funktion för att hämta all data till dashboarden
+  const fetchDashboardData = async (pageNumber: number) => {
     const token = localStorage.getItem("token");
-    try {
-      const res = await axios.get(
-        `http://localhost:5000/api/workouts?page=${pageNumber}&limit=5`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+    const config = { headers: { Authorization: `Bearer ${token}` } };
 
-      setWorkouts(res.data.workouts);
-      setTotalPages(res.data.totalPages);
-      setPage(res.data.currentPage);
+    try {
+      // Vi hämtar både pass och statistik parallellt
+      const [workoutsRes, statsRes] = await Promise.all([
+        axios.get(
+          `http://localhost:5000/api/workouts?page=${pageNumber}&limit=5`,
+          config,
+        ),
+        axios.get(`http://localhost:5000/api/workouts/stats`, config),
+      ]);
+
+      setWorkouts(workoutsRes.data.workouts);
+      setTotalPages(workoutsRes.data.totalPages);
+      setPage(workoutsRes.data.currentPage);
+      setStreak(statsRes.data.streak); // Sparar streaken från backend
     } catch {
-      console.error("Kunde inte hämta pass");
+      console.error("Kunde inte hämta data");
     }
   };
 
   useEffect(() => {
-    fetchWorkouts(page);
+    fetchDashboardData(page);
   }, [page]);
 
   const handleDelete = async (id: string) => {
@@ -44,7 +51,7 @@ function Dashboard() {
         await axios.delete(`http://localhost:5000/api/workouts/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        fetchWorkouts(page);
+        fetchDashboardData(page);
       } catch {
         alert("Kunde inte radera passet");
       }
@@ -57,7 +64,7 @@ function Dashboard() {
       await axios.put(`http://localhost:5000/api/workouts/${id}`, updatedData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      fetchWorkouts(page);
+      fetchDashboardData(page);
     } catch {
       alert("Kunde inte uppdatera passet");
     }
@@ -66,11 +73,18 @@ function Dashboard() {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h1>Hej {username}!</h1>
+        <div className="welcome-row">
+          <h1>Hej {username}!</h1>
+          {streak > 0 && (
+            <div className="streak-badge" title="Antal dagar i rad du tränat">
+              🔥 <span>{streak}</span>
+            </div>
+          )}
+        </div>
       </header>
 
       <AddWorkout
-        onWorkoutAdded={() => fetchWorkouts(1)}
+        onWorkoutAdded={() => fetchDashboardData(1)}
         templateData={templateData}
       />
 
