@@ -3,18 +3,31 @@ import axios from "axios";
 import "./Profile.scss";
 
 function Profile() {
-  const [stats, setStats] = useState({ totalWorkouts: 0, totalVolume: 0 });
+  const [stats, setStats] = useState({
+    totalWorkouts: 0,
+    totalVolume: 0,
+    streak: 0,
+  });
+  const [records, setRecords] = useState<any[]>([]);
   const username = localStorage.getItem("user");
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/workouts/stats", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setStats(res.data);
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+
+      try {
+        const [statsRes, prRes] = await Promise.all([
+          axios.get("http://localhost:5000/api/workouts/stats", config),
+          axios.get("http://localhost:5000/api/workouts/prs", config),
+        ]);
+        setStats(statsRes.data);
+        setRecords(prRes.data);
+      } catch (err) {
+        console.error("Kunde inte hämta profildata");
+      }
     };
-    fetchStats();
+    fetchData();
   }, []);
 
   return (
@@ -30,9 +43,28 @@ function Profile() {
           <span>Totalt antal pass</span>
           <strong>{stats.totalWorkouts} st</strong>
         </div>
+        <div className="stat-card streak-card">
+          <span>Nuvarande Streak</span>
+          <strong>🔥 {stats.streak} dagar</strong>
+        </div>
         <div className="stat-card">
           <span>Total volym lyft</span>
           <strong>{stats.totalVolume.toLocaleString()} kg</strong>
+        </div>
+      </div>
+
+      <div className="pr-section">
+        <h3>Personliga Rekord</h3>
+        <div className="pr-list">
+          {records.length === 0 && (
+            <p className="empty-msg">Inga rekord än. Dags att lyfta tungt!</p>
+          )}
+          {records.map((pr, i) => (
+            <div key={i} className="pr-card">
+              <span className="ex-name">{pr.name}</span>
+              <span className="ex-weight">{pr.weight} kg</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

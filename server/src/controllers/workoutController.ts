@@ -45,11 +45,49 @@ export const getWorkouts = async (req: any, res: Response) => {
 
 export const getWorkoutStats = async (req: any, res: Response) => {
   try {
-    const workouts = await Workout.find({ user: req.user.id });
+    const workouts = await Workout.find({ user: req.user.id }).sort({
+      createdAt: -1,
+    });
 
     const totalWorkouts = workouts.length;
-
     let totalVolume = 0;
+
+    // --- BERÄKNA STREAK ---
+    // 1. Hämta alla unika datum användaren har tränat
+    const workoutDates = workouts.map((w) =>
+      new Date(w.createdAt).toDateString(),
+    );
+    const uniqueDates = [...new Set(workoutDates)]; // Tar bort dubbletter om man kört två pass samma dag
+
+    let streak = 0;
+    if (uniqueDates.length > 0) {
+      const today = new Date().toDateString();
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toDateString();
+
+      // Kolla om senaste passet var idag eller igår, annars är streaken bruten (0)
+      if (uniqueDates[0] === today || uniqueDates[0] === yesterdayStr) {
+        streak = 1; // Börja räkna
+
+        for (let i = 0; i < uniqueDates.length - 1; i++) {
+          const current = new Date(uniqueDates[i]);
+          const next = new Date(uniqueDates[i + 1]);
+
+          // Räkna tidsskillnaden i dagar
+          const diffTime = Math.abs(current.getTime() - next.getTime());
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+          if (diffDays === 1) {
+            streak++;
+          } else {
+            break; // Streaken är bruten
+          }
+        }
+      }
+    }
+
+    // --- BERÄKNA VOLYM ---
     workouts.forEach((workout) => {
       workout.exercises.forEach((ex) => {
         totalVolume += ex.weight * ex.reps * ex.sets;
@@ -59,6 +97,7 @@ export const getWorkoutStats = async (req: any, res: Response) => {
     res.status(200).json({
       totalWorkouts,
       totalVolume,
+      streak, // Skickar med den uträknade streaken
     });
   } catch (error) {
     res.status(500).json({ message: "Kunde inte hämta statistik" });
@@ -108,5 +147,32 @@ export const deleteWorkout = async (req: any, res: Response) => {
     res.status(200).json({ message: "Träningspasset raderat" });
   } catch (error) {
     res.status(500).json({ message: "Kunde inte radera träningspasset" });
+  }
+};
+
+export const getPersonalRecords = async (req: any, res: Response) => {
+  try {
+    const workouts = await Workout.find({ user: req.user.id });
+
+    const prs: { [key: string]: number } = {};
+
+    workouts.forEach((workout) => {
+      workout.exercises.forEach((ex) => {
+        if (!prs[ex.name] || ex.weight > prs[ex.name]) {
+          prs[ex.name] = ex.weight;
+        }
+      });
+    });
+
+    const prArray = Object.keys(prs)
+      .map((name) => ({
+        name,
+        weight: prs[name],
+      }))
+      .sort((a, b) => b.weight - a.weight);
+
+    res.status(200).json(prArray);
+  } catch (error) {
+    res.status(500).json({ message: "Kunde inte hämta personliga rekord" });
   }
 };

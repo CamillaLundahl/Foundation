@@ -9,12 +9,21 @@ export interface IWorkout extends Document {
     reps: number;
     weight: number;
   }[];
+  createdAt: Date; // Lägg till denna rad
+  updatedAt: Date; // Lägg till denna rad
 }
 
 const WorkoutSchema: Schema = new Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    title: { type: String, required: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
     exercises: [
       {
         name: { type: String, required: true },
@@ -25,6 +34,6 @@ const WorkoutSchema: Schema = new Schema(
     ],
   },
   { timestamps: true },
-);
+); // Detta gör att fälten skapas i databasen
 
 export default mongoose.model<IWorkout>("Workout", WorkoutSchema);
