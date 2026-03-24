@@ -13,9 +13,14 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, muscleGroup } = req.body;
+  const { name, muscleGroup, isBodyweight } = req.body;
   try {
-    const newExercise = new Exercise({ name, muscleGroup });
+    const newExercise = new Exercise({ 
+      name, 
+      muscleGroup, 
+      isBodyweight: isBodyweight || false 
+    });
+    
     await newExercise.save();
     res.status(201).json(newExercise);
   } catch (err) {

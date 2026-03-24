@@ -107,44 +107,48 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
 
       {exercises.length > 0 && (
         <div className="staged-exercises-list">
-          {exercises.map((ex, i) => (
-            <div key={i} className="staged-item-row">
-              <span className="ex-name">{ex.name}</span>
-              <div className="ex-inputs">
-                <input
-                  type="number"
-                  placeholder="Set"
-                  value={ex.sets || ""}
-                  onChange={(e) =>
-                    updateStagedExercise(i, "sets", Number(e.target.value))
-                  }
-                />
-                <input
-                  type="number"
-                  placeholder="Reps"
-                  value={ex.reps || ""}
-                  onChange={(e) =>
-                    updateStagedExercise(i, "reps", Number(e.target.value))
-                  }
-                />
-                <input
-                  type="number"
-                  placeholder="kg"
-                  value={ex.weight || ""}
-                  onChange={(e) =>
-                    updateStagedExercise(i, "weight", Number(e.target.value))
-                  }
-                />
-                <button
-                  type="button"
-                  className="remove-btn"
-                  onClick={() => removeExercise(i)}
-                >
-                  ×
-                </button>
+          {exercises.map((ex, i) => {
+            const isBW = library.find((l) => l.name === ex.name)?.isBodyweight;
+            return (
+              <div key={i} className="staged-item-row">
+                <span className="ex-name">{ex.name}</span>
+                <div className="ex-inputs">
+                  <input
+                    type="number"
+                    placeholder="Set"
+                    value={ex.sets || ""}
+                    onChange={(e) =>
+                      updateStagedExercise(i, "sets", Number(e.target.value))
+                    }
+                  />
+                  <input
+                    type="number"
+                    placeholder="Reps"
+                    value={ex.reps || ""}
+                    onChange={(e) =>
+                      updateStagedExercise(i, "reps", Number(e.target.value))
+                    }
+                  />
+                  <input
+                    type="number"
+                    placeholder={isBW ? "BW" : "kg"}
+                    disabled={isBW}
+                    value={isBW ? "" : ex.weight || ""}
+                    onChange={(e) =>
+                      updateStagedExercise(i, "weight", Number(e.target.value))
+                    }
+                  />
+                  <button
+                    type="button"
+                    className="remove-btn"
+                    onClick={() => removeExercise(i)}
+                  >
+                    ×
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -158,7 +162,7 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
           >
             {library.map((ex) => (
               <option key={ex._id} value={ex.name}>
-                {ex.name}
+                {ex.name} {ex.isBodyweight ? "(BW)" : ""}
               </option>
             ))}
           </select>
@@ -178,7 +182,10 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
           />
           <input
             type="number"
-            placeholder="kg"
+            placeholder={
+              library.find((l) => l.name === name)?.isBodyweight ? "BW" : "kg"
+            }
+            disabled={library.find((l) => l.name === name)?.isBodyweight}
             value={weight || ""}
             onChange={(e) => setWeight(Number(e.target.value))}
             className="input-small"

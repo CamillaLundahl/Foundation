@@ -62,7 +62,9 @@ function Profile() {
           {records.map((pr, i) => (
             <div key={i} className="pr-card">
               <span className="ex-name">{pr.name}</span>
-              <span className="ex-weight">{pr.weight} kg</span>
+              <span className="ex-weight">
+                {pr.value} {pr.isBodyweight ? "reps" : "kg"}
+              </span>
             </div>
           ))}
         </div>
