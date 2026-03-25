@@ -9,6 +9,11 @@ import {
 } from "../controllers/workoutController";
 import { protect } from "../middleware/authMiddleware";
 
+/**
+ * Workout Routes
+ * This router manages all endpoints related to workout sessions.
+ * It handles logging new workouts, retrieving history, and calculating performance metrics.
+ */
 const router = express.Router();
 
 router.post("/", protect, createWorkout);

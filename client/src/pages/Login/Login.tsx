@@ -3,11 +3,22 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.scss";
 
+/**
+ * Login Component
+ * Provides a secure entry point for users to authenticate.
+ * It captures credentials and stores session tokens locally upon success.
+ */
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  /**
+   * Handles the login form submission.
+   * Sends credentials to the backend auth endpoint.
+   * On success: Stores the JWT token and username in localStorage for persistence.
+   * On failure: Notifies the user with an alert.
+   */
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {

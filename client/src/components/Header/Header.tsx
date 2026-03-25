@@ -1,6 +1,10 @@
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import "./Header.scss";
 
+/**
+ * Header Component
+ * Handles global navigation and displays user session information.
+ */
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -12,6 +16,7 @@ function Header() {
     navigate("/");
   };
 
+   // If no token exists, the user is not logged in, do not render the header.
   if (!token) return null;
 
   return (

@@ -24,6 +24,10 @@ interface WorkoutCardProps {
   ) => void;
 }
 
+/**
+ * WorkoutCard Component
+ * Displays a single workout session with the ability to toggle into an edit mode.
+ */
 function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(workout.title);
@@ -42,6 +46,7 @@ function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
     setEditExercises(updated);
   };
 
+  // Triggers the onUpdate callback provided by the parent component and exits edit mode.
   const handleSave = () => {
     onUpdate(workout._id, { title: editTitle, exercises: editExercises });
     setIsEditing(false);
@@ -94,6 +99,7 @@ function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
         {new Date(workout.createdAt).toLocaleDateString()}
       </span>
 
+      {/* Exercise list */}
       <ul className="exercise-list">
         {(isEditing ? editExercises : workout.exercises).map((ex, i) => (
           <li key={i} className={isEditing ? "edit-row" : ""}>

@@ -1,8 +1,13 @@
 import express from "express";
 import Exercise from "../models/Exercises";
 
+/**
+ * Exercise Routes
+ * This router manages the global library of exercises available to all users.
+ */
 const router = express.Router();
 
+// Get all exercises and sorted alphabetically
 router.get("/", async (req, res) => {
   try {
     const exercises = await Exercise.find().sort({ name: 1 });
@@ -12,13 +17,14 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Create a new exercise and receive name, muscleGroup and isBodyweight
 router.post("/", async (req, res) => {
   const { name, muscleGroup, isBodyweight } = req.body;
   try {
     const newExercise = new Exercise({ 
       name, 
       muscleGroup, 
-      isBodyweight: isBodyweight || false 
+      isBodyweight: isBodyweight || false // Set isBodyweight to false if not provided
     });
     
     await newExercise.save();

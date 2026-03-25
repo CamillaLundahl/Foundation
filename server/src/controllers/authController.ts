@@ -3,15 +3,18 @@ import User from '../models/User';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-// REGISTRERA NY ANVÄNDARE
+/**
+ * Register new user
+ * Handles user sign-up, password hashing, and automatic login upon success.
+ */
 export const register = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
-    // 1. Kryptera lösenordet
+    // Hash and salt the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 2. Skapa den nya användaren
+    // Create a new user with hashed password
     const newUser = new User({
       username,
       password: hashedPassword
@@ -19,45 +22,50 @@ export const register = async (req: Request, res: Response) => {
 
     await newUser.save();
 
-    // 3. Skapa en JWT-token direkt (logga in användaren automatiskt)
+    // Generate a JWT token
     const token = jwt.sign(
       { id: newUser._id }, 
       process.env.JWT_SECRET || 'hemlighet', 
       { expiresIn: '30d' }
     );
 
-    // 4. Skicka tillbaka token och användarnamn
+    // Send the token and username in the response
     res.status(201).json({ 
       token, 
       username: newUser.username,
       message: 'Användare skapad och inloggad!' 
     });
   } catch (error) {
+    // Error handling for user creation
     res.status(500).json({ message: 'Kunde inte skapa användare (namnet kan vara upptaget)' });
   }
 };
 
-// LOGGA IN
+// Login user, generates JWT token
 export const login = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
+    // Find user by username
     const user: any = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
     }
 
+    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
     }
 
+    // Generate JWT token
     const token = jwt.sign(
       { id: user._id }, 
       process.env.JWT_SECRET || 'hemlighet', 
       { expiresIn: '30d' }
     );
 
+    // Send the token and username in the response
     res.json({ token, username: user.username });
   } catch (error) {
     res.status(500).json({ message: 'Serverfel vid inloggning' });
