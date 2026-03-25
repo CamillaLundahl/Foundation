@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 import "./AddWorkout.scss";
 
 interface AddWorkoutProps {
@@ -10,7 +10,6 @@ interface AddWorkoutProps {
 /**
  * AddWorkout Component
  * Handles the logic for logging a new workout session.
- * Supports both manual entry and pre-filled templates.
  */
 function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
   const [title, setTitle] = useState("");
@@ -25,7 +24,7 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
   useEffect(() => {
     const fetchLibrary = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/exercises");
+        const res = await api.get("/exercises");
         setLibrary(res.data);
         if (res.data.length > 0) setName(res.data[0].name);
       } catch {
@@ -74,9 +73,9 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
     }
   };
 
+  // Handles the submission of a new workout session.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
 
     const finalExercises =
       name && sets > 0
@@ -86,12 +85,8 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
     if (finalExercises.length === 0) return alert("Lägg till minst en övning!");
 
     try {
-      await axios.post(
-        "http://localhost:5000/api/workouts",
-        { title, exercises: finalExercises },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      // Reset form on success after saving
+      await api.post("/workouts", { title, exercises: finalExercises });
+      
       setTitle("");
       setExercises([]);
       onWorkoutAdded();

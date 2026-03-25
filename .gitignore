@@ -1,15 +1,11 @@
-# Paket och beroenden
 node_modules/
 **/node_modules/
 
-# Miljövariabler (Viktigt!)
 .env
 **/.env
 
-# Byggfiler och kompilerad kod
 dist/
 **/dist/
 build/
 
-# Systemfiler
 .DS_Store

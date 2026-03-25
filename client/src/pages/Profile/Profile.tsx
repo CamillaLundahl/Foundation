@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 import "./Profile.scss";
 
 /**
@@ -20,14 +20,11 @@ function Profile() {
   useEffect(() => {
     // Fetches user-specific statistics and personal records from the API.
     const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-
       try {
         // Concurrent API calls to retrieve stats and PRs
         const [statsRes, prRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/workouts/stats", config),
-          axios.get("http://localhost:5000/api/workouts/prs", config),
+          api.get("/workouts/stats"),
+          api.get("/workouts/prs"),
         ]);
         // Update local state with the retrieved data
         setStats(statsRes.data);
