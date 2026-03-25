@@ -1,14 +1,11 @@
-# Hemligheter och miljövariabler
-.env
-
-# Installerade paket
 node_modules/
-client/node_modules/
-server/node_modules/
+**/node_modules/
 
-# Kompilerad kod
+.env
+**/.env
+
 dist/
-client/dist/
+**/dist/
+build/
 
-# Systemfiler
 .DS_Store

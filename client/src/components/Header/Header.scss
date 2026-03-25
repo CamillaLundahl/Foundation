@@ -1,0 +1,91 @@
+@use "styles/variables" as *;
+
+.main-header {
+  background-color: $header-bg;
+  border-bottom: 1px solid $border-color;
+  padding: 0 24px;
+  height: 70px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+
+  .header-inner {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: $accent-blue;
+        text-decoration: none;
+        letter-spacing: 1px;
+      }
+
+      .main-nav {
+        display: flex;
+        gap: 24px;
+
+        .nav-link {
+          text-decoration: none;
+          color: $text-secondary;
+          font-size: 0.95rem;
+          font-weight: 500;
+          transition: all 0.2s ease;
+
+          &:hover:not(.disabled) {
+            color: $text-primary;
+          }
+
+          &.active {
+            color: $accent-blue;
+            font-weight: 700;
+          }
+
+          &.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+
+    .nav-info {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+
+      .user-badge {
+        font-size: 0.9rem;
+        color: $text-secondary;
+        strong {
+          color: $text-primary;
+        }
+      }
+
+      .logout-link {
+        background-color: rgba($accent-red, 0.1);
+        color: $accent-red;
+        border: 1px solid rgba($accent-red, 0.2);
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+
+        &:hover {
+          background-color: $accent-red;
+          color: white;
+        }
+      }
+    }
+  }
+}

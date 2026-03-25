@@ -1,0 +1,22 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [dev]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Branch Guard
+        if: github.base_ref == 'main' && github.head_ref != 'dev'
+        run: |
+          echo "FEL: Endast 'dev' får mergas in i 'main'."
+          exit 1
+
+      - name: Success Message
+        run: echo "Branch-kontroll godkänd!"

@@ -1,0 +1,90 @@
+@use "styles/variables" as *;
+
+.exercises-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+
+  h1 { color: $text-primary; margin-bottom: 30px; }
+
+  .add-exercise-form {
+    display: flex;
+    gap: 12px;
+    background: $card-bg;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid $border-color;
+    margin-bottom: 40px;
+    align-items: center;
+
+    input[type="text"], select {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      padding: 10px;
+      color: white;
+      outline: none;
+      &:focus { border-color: $accent-blue; }
+    }
+
+    input[type="text"] { flex: 3; }
+    select { flex: 1.5; cursor: pointer; }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: $text-secondary;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      flex: none;
+
+      input { width: 18px; height: 18px; cursor: pointer; }
+    }
+
+    button {
+      flex: 1;
+      background: $accent-blue;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      padding: 10px;
+      cursor: pointer;
+      &:hover { opacity: 0.9; }
+    }
+  }
+
+  .exercise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+
+    .exercise-card {
+      background: $card-bg;
+      border: 1px solid $border-color;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+
+      h3 { margin: 0 0 12px 0; color: $text-primary; }
+
+      .badge-row {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        .badge {
+          font-size: 0.65rem;
+          background: rgba($accent-blue, 0.1);
+          color: $accent-blue;
+          padding: 4px 10px;
+          border-radius: 20px;
+          font-weight: 700;
+          text-transform: uppercase;
+          &.bw { background: rgba(#10b981, 0.1); color: #10b981; }
+        }
+      }
+    }
+  }
+}

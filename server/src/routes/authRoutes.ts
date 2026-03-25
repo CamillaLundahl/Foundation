@@ -1,9 +1,13 @@
 import express from 'express';
 import { register, login } from '../controllers/authController';
 
+
+/**
+ * Authentication Routes
+ * This router handles all endpoints related to user identity and session management.
+ */
 const router = express.Router();
 
-// Dessa adresser läggs till efter /api/auth
 router.post('/register', register);
 router.post('/login', login);
 
