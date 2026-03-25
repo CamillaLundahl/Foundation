@@ -2,6 +2,11 @@ import { Request, Response } from "express";
 import Workout from "../models/Workout";
 import Exercise from "../models/Exercises";
 
+/**
+ * Workout Controller
+ * Manages all CRUD operations for user workouts, including statistics 
+ * and personal record calculations.
+ */
 export const createWorkout = async (req: any, res: Response) => {
   try {
     const { title, exercises } = req.body;
@@ -17,11 +22,12 @@ export const createWorkout = async (req: any, res: Response) => {
   }
 };
 
+// Retrive paginated list of workouts for the user
 export const getWorkouts = async (req: any, res: Response) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 5;
-    const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit; // Calculate the number of documents to skip
 
     const workouts = await Workout.find({ user: req.user.id })
       .sort({ createdAt: -1 })
@@ -41,6 +47,7 @@ export const getWorkouts = async (req: any, res: Response) => {
   }
 };
 
+// Calculate and return workout statistics, total workouts, total volume, and longest streak
 export const getWorkoutStats = async (req: any, res: Response) => {
   try {
     const workouts = await Workout.find({ user: req.user.id }).sort({
@@ -50,6 +57,7 @@ export const getWorkoutStats = async (req: any, res: Response) => {
     const totalWorkouts = workouts.length;
     let totalVolume = 0;
 
+    // Streak calculation, get all unique dates the user has worked out
     const workoutDates = workouts.map((w) =>
       new Date(w.createdAt).toDateString(),
     );
@@ -62,8 +70,10 @@ export const getWorkoutStats = async (req: any, res: Response) => {
       yesterday.setDate(yesterday.getDate() - 1);
       const yesterdayStr = yesterday.toDateString();
 
+      // Check if the first date is today or yesterday
       if (uniqueDates[0] === today || uniqueDates[0] === yesterdayStr) {
         streak = 1;
+        // Check if the last date is today
         for (let i = 0; i < uniqueDates.length - 1; i++) {
           const current = new Date(uniqueDates[i]);
           const next = new Date(uniqueDates[i + 1]);
@@ -72,12 +82,13 @@ export const getWorkoutStats = async (req: any, res: Response) => {
           if (diffDays === 1) {
             streak++;
           } else {
-            break;
+            break; // Break the loop if the dates are not consecutive
           }
         }
       }
     }
 
+    // Calculate total volume
     workouts.forEach((workout) => {
       workout.exercises.forEach((ex) => {
         totalVolume += ex.weight * ex.reps * ex.sets;
@@ -94,11 +105,13 @@ export const getWorkoutStats = async (req: any, res: Response) => {
   }
 };
 
+// Calculate and return personal records for each exercise
 export const getPersonalRecords = async (req: any, res: Response) => {
   try {
     const workouts = await Workout.find({ user: req.user.id });
     const exerciseLibrary = await Exercise.find();
 
+    // Create a map of exercise names and whether they are bodyweight
     const bodyweightMap: { [key: string]: boolean } = {};
     exerciseLibrary.forEach((ex) => {
       bodyweightMap[ex.name] = ex.isBodyweight;
@@ -110,6 +123,7 @@ export const getPersonalRecords = async (req: any, res: Response) => {
       workout.exercises.forEach((ex) => {
         const isBW = bodyweightMap[ex.name] || false;
 
+        // Calculate the current value for the exercise, either reps*sets or weight
         const currentValue = isBW ? ex.reps * ex.sets : ex.weight;
 
         if (!prs[ex.name] || currentValue > prs[ex.name].value) {
@@ -121,6 +135,7 @@ export const getPersonalRecords = async (req: any, res: Response) => {
       });
     });
 
+    // Sort the personal records in descending order
     const prArray = Object.keys(prs)
       .map((name) => ({
         name,
@@ -135,6 +150,7 @@ export const getPersonalRecords = async (req: any, res: Response) => {
   }
 };
 
+// Update an existing workout
 export const updateWorkout = async (req: any, res: Response) => {
   try {
     const { title, exercises } = req.body;
@@ -144,6 +160,7 @@ export const updateWorkout = async (req: any, res: Response) => {
       return res.status(404).json({ message: "Passet hittades inte" });
     }
 
+    // Check if the user is authorized
     if (workout.user.toString() !== req.user.id) {
       return res.status(401).json({ message: "Ej behörig" });
     }
@@ -160,12 +177,14 @@ export const updateWorkout = async (req: any, res: Response) => {
   }
 };
 
+// Delete a workout session
 export const deleteWorkout = async (req: any, res: Response) => {
   try {
     const workout = await Workout.findById(req.params.id);
     if (!workout) {
       return res.status(404).json({ message: "Träningspasset hittades inte" });
     }
+    // Check if the user is authorized
     if (workout.user.toString() !== req.user.id) {
       return res
         .status(401)

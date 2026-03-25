@@ -11,12 +11,18 @@ interface Exercise {
   isBodyweight: boolean;
 }
 
+/**
+ * Exercises Component
+ * Manages the global exercise library where users can view existing exercises
+ * and add new ones to the database.
+ */
 function Exercises() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [name, setName] = useState("");
   const [muscleGroup, setMuscleGroup] = useState("Ben");
-  const [isBodyweight, setIsBodyweight] = useState(false);
+  const [isBodyweight, setIsBodyweight] = useState(false); // Toggle for bodyweight-only exercises
 
+  // Fetches all exercises from the backend library.
   const fetchExercises = async () => {
     try {
       const { data } = await axios.get("http://localhost:5000/api/exercises");
@@ -30,6 +36,7 @@ function Exercises() {
     fetchExercises();
   }, []);
 
+  // Handles the submission of a new exercise.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -38,8 +45,10 @@ function Exercises() {
         muscleGroup,
         isBodyweight,
       });
+      // Reset form fields on success
       setName("");
       setIsBodyweight(false);
+      // Refresh the exercise library
       fetchExercises();
     } catch {
       alert("Fel vid sparning");
@@ -50,6 +59,7 @@ function Exercises() {
     <div className="exercises-container">
       <h1>Övningsbibliotek</h1>
 
+      {/* Create new exercise */}
       <form onSubmit={handleSubmit} className="add-exercise-form">
         <input
           type="text"
@@ -70,6 +80,7 @@ function Exercises() {
           ))}
         </select>
 
+        {/* Checkbox to define if the exercise should be tracked via Reps instead of Weight */}
         <label className="checkbox-container">
           <input
             type="checkbox"

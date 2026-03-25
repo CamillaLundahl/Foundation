@@ -7,6 +7,11 @@ interface AddWorkoutProps {
   templateData?: { templateExercises: string[]; templateTitle: string } | null;
 }
 
+/**
+ * AddWorkout Component
+ * Handles the logic for logging a new workout session.
+ * Supports both manual entry and pre-filled templates.
+ */
 function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
   const [title, setTitle] = useState("");
   const [exercises, setExercises] = useState<any[]>([]);
@@ -30,6 +35,7 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
     fetchLibrary();
   }, []);
 
+  // Check if templateData is available. If a user starts a workout, we pre-fill the list
   useEffect(() => {
     if (templateData) {
       setTitle(templateData.templateTitle);
@@ -85,6 +91,7 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
         { title, exercises: finalExercises },
         { headers: { Authorization: `Bearer ${token}` } },
       );
+      // Reset form on success after saving
       setTitle("");
       setExercises([]);
       onWorkoutAdded();
@@ -108,6 +115,7 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
       {exercises.length > 0 && (
         <div className="staged-exercises-list">
           {exercises.map((ex, i) => {
+            // Check if this exercise is marked as bodyweight in the library
             const isBW = library.find((l) => l.name === ex.name)?.isBodyweight;
             return (
               <div key={i} className="staged-item-row">
@@ -152,6 +160,7 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
         </div>
       )}
 
+      {/* Add extra exercise row */}
       <div className="exercise-inputs-row divider">
         <p>Lägg till extra övning:</p>
         <div className="row-content">

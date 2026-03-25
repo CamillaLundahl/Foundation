@@ -5,10 +5,16 @@ import AddWorkout from "../../components/AddWorkout/AddWorkout";
 import WorkoutCard from "../../components/WorkoutCard/WorkoutCard";
 import "./Dashboard.scss";
 
+/**
+ * Dashboard Component
+ * The main hub for authenticated users. Displays workout history, 
+ * training streaks, and provides the interface for logging new sessions.
+ */
 function Dashboard() {
   const [workouts, setWorkouts] = useState<any[]>([]);
-  const [streak, setStreak] = useState(0); // Nytt state för streak
+  const [streak, setStreak] = useState(0);
 
+  // Pagination states to handle large amounts of workout data
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -16,13 +22,11 @@ function Dashboard() {
   const location = useLocation();
   const templateData = location.state as any;
 
-  // Funktion för att hämta all data till dashboarden
   const fetchDashboardData = async (pageNumber: number) => {
     const token = localStorage.getItem("token");
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
     try {
-      // Vi hämtar både pass och statistik parallellt
       const [workoutsRes, statsRes] = await Promise.all([
         axios.get(
           `http://localhost:5000/api/workouts?page=${pageNumber}&limit=5`,
@@ -34,16 +38,18 @@ function Dashboard() {
       setWorkouts(workoutsRes.data.workouts);
       setTotalPages(workoutsRes.data.totalPages);
       setPage(workoutsRes.data.currentPage);
-      setStreak(statsRes.data.streak); // Sparar streaken från backend
+      setStreak(statsRes.data.streak);
     } catch {
       console.error("Kunde inte hämta data");
     }
   };
 
+  // Re-fetch data whenever the page number changes
   useEffect(() => {
     fetchDashboardData(page);
   }, [page]);
 
+  // Handles the deletion of a workout session.
   const handleDelete = async (id: string) => {
     if (window.confirm("Vill du verkligen ta bort detta pass?")) {
       const token = localStorage.getItem("token");
@@ -51,6 +57,7 @@ function Dashboard() {
         await axios.delete(`http://localhost:5000/api/workouts/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        // Refresh the current page to reflect changes
         fetchDashboardData(page);
       } catch {
         alert("Kunde inte radera passet");
@@ -58,6 +65,7 @@ function Dashboard() {
     }
   };
 
+  // Updating an existing workout session.
   const handleUpdate = async (id: string, updatedData: any) => {
     const token = localStorage.getItem("token");
     try {
@@ -105,6 +113,7 @@ function Dashboard() {
           )}
         </div>
 
+        {/* PAGINATION CONTROLS: Only visible if there are multiple pages */}
         {totalPages > 1 && (
           <div className="pagination">
             <button

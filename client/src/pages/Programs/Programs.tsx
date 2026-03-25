@@ -15,23 +15,36 @@ interface Program {
   exercises: string[];
 }
 
+/**
+ * Programs Component
+ * This component allows users to create, view, edit, and delete workout templates (programs).
+ * It also allows users to "start" a program by sending the data to the Dashboard.
+ */
 function Programs() {
+  // Data states
   const [library, setLibrary] = useState<Exercise[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
 
+  // UI and filter state
   const [exSearch, setExSearch] = useState("");
   const [exCategory, setExCategory] = useState("Alla");
 
+  // Create Program state
   const [title, setTitle] = useState("");
   const [selectedExercises, setSelectedExercises] = useState<string[]>([]);
   const navigate = useNavigate();
 
+  // Edit Program state
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editExercises, setEditExercises] = useState<string[]>([]);
 
   const categories = ["Alla", "Ben", "Bröst", "Rygg", "Axlar", "Armar", "Mage"];
 
+  /**
+   * Fetches data from the backend.
+   * Uses Promise.all to fetch both the exercise library and user programs concurrently.
+   */
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -51,6 +64,11 @@ function Programs() {
     fetchData();
   }, []);
 
+  /**
+   * Filtering logic for the exercise library.
+   * Filters by name (search string) and muscle group (category).
+   * Also sorts the results alphabetically.
+   */
   const filteredLibrary = library
     .filter((ex) => {
       const matchesSearch = ex.name
@@ -74,6 +92,10 @@ function Programs() {
     }
   };
 
+  /**
+   * Handles the creation of a new workout program.
+   * Validates that at least one exercise is selected before sending to the API.
+   */
   const handleCreateProgram = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedExercises.length === 0) return alert("Välj minst en övning!");
@@ -84,6 +106,7 @@ function Programs() {
         { title, exercises: selectedExercises },
         { headers: { Authorization: `Bearer ${token}` } },
       );
+      // Reset form on success
       setTitle("");
       setSelectedExercises([]);
       fetchData();
@@ -92,12 +115,14 @@ function Programs() {
     }
   };
 
+  // Editing a program
   const startEdit = (p: Program) => {
     setEditingId(p._id);
     setEditTitle(p.title);
     setEditExercises([...p.exercises]);
   };
 
+  // Send updated data to the API
   const handleUpdate = async (id: string) => {
     const token = localStorage.getItem("token");
     try {
@@ -106,13 +131,14 @@ function Programs() {
         { title: editTitle, exercises: editExercises },
         { headers: { Authorization: `Bearer ${token}` } },
       );
-      setEditingId(null);
+      setEditingId(null); //Exit edit mode
       fetchData();
     } catch {
       alert("Kunde inte uppdatera.");
     }
   };
 
+  // Delete a program after confirmation
   const handleDelete = async (id: string) => {
     if (!window.confirm("Ta bort programmet?")) return;
     const token = localStorage.getItem("token");
@@ -126,6 +152,7 @@ function Programs() {
     }
   };
 
+  // Start a program by navigating to the Dashboard
   const startProgram = (p: Program) => {
     navigate("/dashboard", {
       state: { templateExercises: p.exercises, templateTitle: p.title },

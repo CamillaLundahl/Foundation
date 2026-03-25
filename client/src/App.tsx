@@ -7,6 +7,11 @@ import Profile from "./pages/Profile/Profile";
 import Exercises from "./pages/Exercises/Exercises";
 import Programs from "./pages/Programs/Programs";
 
+/**
+ * App Component
+ * This is the root component of the application.
+ * It sets up the React Router for navigation and defines the main layout structure.
+ */
 function App() {
   return (
     <Router>
