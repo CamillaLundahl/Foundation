@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import "./Programs.scss";
 
@@ -46,12 +46,10 @@ function Programs() {
    * Uses Promise.all to fetch both the exercise library and user programs concurrently.
    */
   const fetchData = async () => {
-    const token = localStorage.getItem("token");
-    const config = { headers: { Authorization: `Bearer ${token}` } };
     try {
       const [exRes, progRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/exercises"),
-        axios.get("http://localhost:5000/api/programs", config),
+        api.get("/exercises"),
+        api.get("/programs"),
       ]);
       setLibrary(exRes.data);
       setPrograms(progRes.data);
@@ -99,12 +97,10 @@ function Programs() {
   const handleCreateProgram = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedExercises.length === 0) return alert("Välj minst en övning!");
-    const token = localStorage.getItem("token");
     try {
-      await axios.post(
-        "http://localhost:5000/api/programs",
-        { title, exercises: selectedExercises },
-        { headers: { Authorization: `Bearer ${token}` } },
+      await api.post(
+        "/programs",
+        { title, exercises: selectedExercises }
       );
       // Reset form on success
       setTitle("");
@@ -124,12 +120,10 @@ function Programs() {
 
   // Send updated data to the API
   const handleUpdate = async (id: string) => {
-    const token = localStorage.getItem("token");
     try {
-      await axios.put(
-        `http://localhost:5000/api/programs/${id}`,
-        { title: editTitle, exercises: editExercises },
-        { headers: { Authorization: `Bearer ${token}` } },
+      await api.put(
+        `/programs/${id}`,
+        { title: editTitle, exercises: editExercises }
       );
       setEditingId(null); //Exit edit mode
       fetchData();
@@ -141,11 +135,8 @@ function Programs() {
   // Delete a program after confirmation
   const handleDelete = async (id: string) => {
     if (!window.confirm("Ta bort programmet?")) return;
-    const token = localStorage.getItem("token");
     try {
-      await axios.delete(`http://localhost:5000/api/programs/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/programs/${id}`);
       fetchData();
     } catch {
       alert("Kunde inte radera.");

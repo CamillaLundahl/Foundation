@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 import { useLocation } from "react-router-dom";
 import AddWorkout from "../../components/AddWorkout/AddWorkout";
 import WorkoutCard from "../../components/WorkoutCard/WorkoutCard";
@@ -23,16 +23,10 @@ function Dashboard() {
   const templateData = location.state as any;
 
   const fetchDashboardData = async (pageNumber: number) => {
-    const token = localStorage.getItem("token");
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-
     try {
       const [workoutsRes, statsRes] = await Promise.all([
-        axios.get(
-          `http://localhost:5000/api/workouts?page=${pageNumber}&limit=5`,
-          config,
-        ),
-        axios.get(`http://localhost:5000/api/workouts/stats`, config),
+        api.get(`/workouts?page=${pageNumber}&limit=5`),
+        api.get("/workouts/stats"),
       ]);
 
       setWorkouts(workoutsRes.data.workouts);
@@ -52,11 +46,8 @@ function Dashboard() {
   // Handles the deletion of a workout session.
   const handleDelete = async (id: string) => {
     if (window.confirm("Vill du verkligen ta bort detta pass?")) {
-      const token = localStorage.getItem("token");
       try {
-        await axios.delete(`http://localhost:5000/api/workouts/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await api.delete(`/workouts/${id}`);
         // Refresh the current page to reflect changes
         fetchDashboardData(page);
       } catch {
@@ -67,11 +58,8 @@ function Dashboard() {
 
   // Updating an existing workout session.
   const handleUpdate = async (id: string, updatedData: any) => {
-    const token = localStorage.getItem("token");
     try {
-      await axios.put(`http://localhost:5000/api/workouts/${id}`, updatedData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.put(`/workouts/${id}`, updatedData);
       fetchDashboardData(page);
     } catch {
       alert("Kunde inte uppdatera passet");

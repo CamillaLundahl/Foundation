@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 import "./Exercises.scss";
 
 const MUSCLE_GROUPS = ["Ben", "Rygg", "Bröst", "Axlar", "Armar", "Mage"];
@@ -25,7 +25,7 @@ function Exercises() {
   // Fetches all exercises from the backend library.
   const fetchExercises = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/exercises");
+      const { data } = await api.get("/exercises");
       setExercises(data);
     } catch (err) {
       console.error("Kunde inte hämta övningar");
@@ -40,7 +40,7 @@ function Exercises() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/exercises", {
+      await api.post("/exercises", {
         name,
         muscleGroup,
         isBodyweight,
