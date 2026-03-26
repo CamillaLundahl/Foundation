@@ -25,15 +25,15 @@ function Dashboard() {
 
   const fetchDashboardData = async (pageNumber: number) => {
     try {
-      const [workoutsRes, statsRes] = await Promise.all([
+      const [{ data: workoutData }, { data: statsData }] = await Promise.all([
         api.get(`/workouts?page=${pageNumber}&limit=5`),
         api.get("/workouts/stats"),
       ]);
 
-      setWorkouts(workoutsRes.data.workouts);
-      setTotalPages(workoutsRes.data.totalPages);
-      setPage(workoutsRes.data.currentPage);
-      setStreak(statsRes.data.streak);
+      setWorkouts(workoutData.workouts);
+      setTotalPages(workoutData.totalPages);
+      setPage(workoutData.currentPage);
+      setStreak(statsData.streak);
     } catch {
       console.error("Kunde inte hämta data");
     }
@@ -46,14 +46,13 @@ function Dashboard() {
 
   // Handles the deletion of a workout session.
   const handleDelete = async (id: string) => {
-    if (window.confirm("Vill du verkligen ta bort detta pass?")) {
-      try {
-        await api.delete(`/workouts/${id}`);
-        // Refresh the current page to reflect changes
-        fetchDashboardData(page);
-      } catch {
-        alert("Kunde inte radera passet");
-      }
+    if (!window.confirm("Vill du verkligen ta bort detta pass?")) return;
+
+    try {
+      await api.delete(`/workouts/${id}`);
+      fetchDashboardData(page);
+    } catch {
+      alert("Kunde inte radera passet");
     }
   };
 
@@ -91,10 +90,10 @@ function Dashboard() {
           {workouts.length === 0 ? (
             <p className="empty-msg">Inga pass loggade än. Kom igång!</p>
           ) : (
-            workouts.map((w) => (
+            workouts.map((workout) => (
               <WorkoutCard
-                key={w._id}
-                workout={w}
+                key={workout._id}
+                workout={workout}
                 onDelete={handleDelete}
                 onUpdate={handleUpdate}
               />
