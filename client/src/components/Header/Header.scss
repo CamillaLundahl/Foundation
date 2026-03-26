@@ -1,11 +1,11 @@
-@use "styles/variables" as *;
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
 
 .main-header {
   background-color: rgba($header-bg, 0.8);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba($border-color, 0.5);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  
   padding: 0 24px;
   height: 70px;
   position: sticky;
@@ -20,76 +20,161 @@
     justify-content: space-between;
     align-items: center;
 
-    .header-left {
+    @include mobile {
+      flex-direction: column;
+    }
+  }
+
+  .header-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @include mobile {
+      width: 100%;
+      height: 70px;
+    }
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: $accent-blue;
+    text-decoration: none;
+    letter-spacing: 1px;
+  }
+
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+
+    @include mobile {
       display: flex;
-      align-items: center;
-      gap: 48px;
+    }
 
-      .logo {
-        font-size: 1.5rem;
-        font-weight: 900;
-        color: $accent-blue;
-        text-decoration: none;
-        letter-spacing: 1px;
+    span {
+      display: block;
+      width: 25px;
+      height: 2px;
+      background-color: white;
+      transition: all 0.3s ease;
+    }
+
+    &.is-active {
+      span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
       }
+      span:nth-child(2) {
+        opacity: 0;
+      }
+      span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+      }
+    }
+  }
 
-      .main-nav {
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    margin-left: 48px;
+
+    @include mobile {
+      display: none;
+      position: absolute;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background-color: rgba($header-bg, 0.98);
+      flex-direction: column;
+      padding: 32px 24px;
+      gap: 32px;
+      margin-left: 0;
+      border-bottom: 1px solid rgba($border-color, 0.5);
+      backdrop-filter: blur(20px);
+
+      &.is-open {
         display: flex;
-        gap: 24px;
+        @include fade-in-entry;
+      }
+    }
+  }
 
-        .nav-link {
-          text-decoration: none;
-          color: $text-secondary;
-          font-size: 0.95rem;
-          font-weight: 500;
-          transition: all 0.2s ease;
-          position: relative;
+  .main-nav {
+    display: flex;
+    gap: 24px;
 
-          &:hover:not(.disabled) {
-            color: $text-primary;
-          }
+    @include mobile {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
 
-          &.active {
-            color: $accent-blue;
-            font-weight: 700;
-          }
+    .nav-link {
+      text-decoration: none;
+      color: $text-secondary;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
 
-          &.disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-          }
-        }
+      &:hover:not(.disabled) {
+        color: $text-primary;
+      }
+      &.active {
+        color: $accent-blue;
+        font-weight: 700;
+      }
+      &.disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .nav-info {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+
+    @include mobile {
+      flex-direction: column;
+      width: 100%;
+      padding-top: 24px;
+      border-top: 1px solid rgba($border-color, 0.2);
+    }
+
+    .user-badge {
+      font-size: 0.9rem;
+      color: $text-secondary;
+      strong {
+        color: $text-primary;
       }
     }
 
-    .nav-info {
-      display: flex;
-      align-items: center;
-      gap: 24px;
+    .logout-link {
+      background-color: rgba($accent-red, 0.1);
+      color: $accent-red;
+      border: 1px solid rgba($accent-red, 0.2);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
 
-      .user-badge {
-        font-size: 0.9rem;
-        color: $text-secondary;
-        strong {
-          color: $text-primary;
-        }
+      &:hover {
+        background-color: $accent-red;
+        color: white;
       }
 
-      .logout-link {
-        background-color: rgba($accent-red, 0.1);
-        color: $accent-red;
-        border: 1px solid rgba($accent-red, 0.2);
-        padding: 8px 16px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s;
-
-        &:hover {
-          background-color: $accent-red;
-          color: white;
-          box-shadow: 0 0 15px rgba($accent-red, 0.4);
-        }
+      @include mobile {
+        width: 100%;
+        padding: 12px;
       }
     }
   }

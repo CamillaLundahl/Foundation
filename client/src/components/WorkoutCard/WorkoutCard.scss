@@ -98,8 +98,8 @@
     }
 
     .edit-row {
-      border: 1px dashed $accent-blue;
-      background: rgba($accent-blue, 0.05);
+      border: 1px solid rgba($border-color, 0.5);
+      background: rgba(255, 255, 255, 0.02);
       border-radius: 8px;
       padding: 10px;
 
