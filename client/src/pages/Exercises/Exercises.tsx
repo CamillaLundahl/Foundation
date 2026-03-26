@@ -34,15 +34,11 @@ function Exercises() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post("/exercises", {
-        name,
-        muscleGroup,
-        isBodyweight,
-      });
+      await api.post("/exercises", { name, muscleGroup, isBodyweight });
+
       // Reset form fields on success
       setName("");
       setIsBodyweight(false);
-      // Refresh the exercise library
       fetchExercises();
     } catch {
       alert("Fel vid sparning");
@@ -88,12 +84,12 @@ function Exercises() {
       </form>
 
       <div className="exercise-grid">
-        {exercises.map((ex) => (
-          <div key={ex._id} className="exercise-card">
-            <h3>{ex.name}</h3>
+        {exercises.map(({ _id, name, muscleGroup, isBodyweight }) => (
+          <div key={_id} className="exercise-card">
+            <h3>{name}</h3>
             <div className="badge-row">
-              <span className="badge">{ex.muscleGroup}</span>
-              {ex.isBodyweight && <span className="badge bw">Kroppsvikt</span>}
+              <span className="badge">{muscleGroup}</span>
+              {isBodyweight && <span className="badge bw">Kroppsvikt</span>}
             </div>
           </div>
         ))}
