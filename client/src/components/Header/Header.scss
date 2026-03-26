@@ -1,8 +1,11 @@
 @use "styles/variables" as *;
 
 .main-header {
-  background-color: $header-bg;
-  border-bottom: 1px solid $border-color;
+  background-color: rgba($header-bg, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba($border-color, 0.5);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  
   padding: 0 24px;
   height: 70px;
   position: sticky;
@@ -40,6 +43,7 @@
           font-size: 0.95rem;
           font-weight: 500;
           transition: all 0.2s ease;
+          position: relative;
 
           &:hover:not(.disabled) {
             color: $text-primary;
@@ -84,6 +88,7 @@
         &:hover {
           background-color: $accent-red;
           color: white;
+          box-shadow: 0 0 15px rgba($accent-red, 0.4);
         }
       }
     }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../../api/axios";
 import "./AddWorkout.scss";
+import type { Exercise, WorkoutExercise } from "../../types";
 
 interface AddWorkoutProps {
   onWorkoutAdded: () => void;
@@ -13,8 +14,8 @@ interface AddWorkoutProps {
  */
 function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
   const [title, setTitle] = useState("");
-  const [exercises, setExercises] = useState<any[]>([]);
-  const [library, setLibrary] = useState<any[]>([]);
+  const [exercises, setExercises] = useState<WorkoutExercise[]>([]);
+  const [library, setLibrary] = useState<Exercise[]>([]);
 
   const [name, setName] = useState("");
   const [sets, setSets] = useState(0);
@@ -52,7 +53,7 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
 
   const updateStagedExercise = (
     index: number,
-    field: string,
+    field: keyof WorkoutExercise,
     value: number,
   ) => {
     const updated = [...exercises];
@@ -86,7 +87,7 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
 
     try {
       await api.post("/workouts", { title, exercises: finalExercises });
-      
+
       setTitle("");
       setExercises([]);
       onWorkoutAdded();

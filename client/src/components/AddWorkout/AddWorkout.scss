@@ -1,45 +1,17 @@
-@use "styles/variables" as *;
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
 
 .add-workout-form {
-  background: $card-bg;
-  padding: 24px;
-  border-radius: 16px;
-  border: 1px solid $border-color;
+  @include card-style;
   margin-bottom: 32px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-  width: 100%;
 
   h3 {
-    margin-top: 0;
-    color: $text-primary;
-    font-size: 1.25rem;
-    margin-bottom: 20px;
+    @include section-header;
   }
 
   input,
   select {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid $border-color;
-    border-radius: 8px;
-    padding: 10px;
-    color: $text-primary;
-    font-size: 0.9rem;
-    outline: none;
-    transition: all 0.2s;
-    min-width: 0;
-
-    &:focus {
-      border-color: $accent-blue;
-      background: rgba(255, 255, 255, 0.08);
-    }
-  }
-
-  .title-input {
-    width: 100%;
-    margin-bottom: 20px;
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 12px;
+    @include input-base;
   }
 
   .staged-exercises-list {
@@ -56,7 +28,6 @@
       padding: 12px 0;
       border-bottom: 1px solid rgba($border-color, 0.5);
       gap: 15px;
-
       &:last-child {
         border-bottom: none;
       }
@@ -74,14 +45,8 @@
         align-items: center;
 
         input {
-          width: 55px;
-          padding: 6px;
-          text-align: center;
-          background: rgba(255, 255, 255, 0.03);
-
-          &::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-          }
+          width: 80px;
+          padding: 8px 4px;
         }
 
         .remove-btn {
@@ -90,12 +55,8 @@
           color: $accent-red;
           font-size: 1.4rem;
           cursor: pointer;
-          padding: 0 5px;
-          margin-left: 5px;
-          line-height: 1;
           transition: transform 0.2s;
           &:hover {
-            color: white;
             transform: scale(1.2);
           }
         }
@@ -111,9 +72,9 @@
     p {
       font-size: 0.8rem;
       color: $text-secondary;
-      margin-bottom: 12px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      margin-bottom: 12px;
     }
 
     .row-content {
@@ -121,22 +82,9 @@
       gap: 10px;
       margin-bottom: 16px;
       align-items: center;
-
       .input-name {
         flex: 2.5;
-        cursor: pointer;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        background-size: 14px;
-        padding-right: 30px;
-
-        option {
-          background-color: $card-bg;
-        }
       }
-
       .input-small {
         flex: 1;
       }

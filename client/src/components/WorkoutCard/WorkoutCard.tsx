@@ -1,26 +1,13 @@
 import { useState } from "react";
 import "./WorkoutCard.scss";
-
-interface Exercise {
-  name: string;
-  sets: number;
-  reps: number;
-  weight: number;
-}
-
-interface Workout {
-  _id: string;
-  title: string;
-  exercises: Exercise[];
-  createdAt: string;
-}
+import type { Workout, WorkoutExercise } from "../../types";
 
 interface WorkoutCardProps {
   workout: Workout;
   onDelete: (id: string) => void;
   onUpdate: (
     id: string,
-    updatedData: { title: string; exercises: Exercise[] },
+    updatedData: { title: string; exercises: WorkoutExercise[] },
   ) => void;
 }
 
@@ -35,14 +22,13 @@ function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
 
   const handleExerciseChange = (
     index: number,
-    field: keyof Exercise,
+    field: keyof WorkoutExercise,
     value: string | number,
   ) => {
     const updated = [...editExercises];
-    updated[index] = {
-      ...updated[index],
-      [field]: field === "name" ? value : Number(value),
-    };
+    const finalValue = field === "name" ? value : Number(value);
+
+    updated[index] = { ...updated[index], [field]: finalValue };
     setEditExercises(updated);
   };
 
@@ -51,6 +37,9 @@ function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
     onUpdate(workout._id, { title: editTitle, exercises: editExercises });
     setIsEditing(false);
   };
+
+  // Displays either the original data or the edited data depending on the current state.
+  const displayExercises = isEditing ? editExercises : workout.exercises;
 
   return (
     <div className="workout-card">
@@ -101,7 +90,7 @@ function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
 
       {/* Exercise list */}
       <ul className="exercise-list">
-        {(isEditing ? editExercises : workout.exercises).map((ex, i) => (
+        {displayExercises.map((ex, i) => (
           <li key={i} className={isEditing ? "edit-row" : ""}>
             {isEditing ? (
               <div className="edit-exercise-inputs">
