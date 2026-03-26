@@ -2,18 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import "./Programs.scss";
-
-interface Exercise {
-  _id: string;
-  name: string;
-  muscleGroup: string;
-}
-
-interface Program {
-  _id: string;
-  title: string;
-  exercises: string[];
-}
+import type { Exercise, Program } from "../../types";
 
 /**
  * Programs Component

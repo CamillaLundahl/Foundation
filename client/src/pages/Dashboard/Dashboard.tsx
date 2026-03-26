@@ -4,14 +4,15 @@ import { useLocation } from "react-router-dom";
 import AddWorkout from "../../components/AddWorkout/AddWorkout";
 import WorkoutCard from "../../components/WorkoutCard/WorkoutCard";
 import "./Dashboard.scss";
+import type { Workout } from "../../types";
 
 /**
  * Dashboard Component
- * The main hub for authenticated users. Displays workout history, 
+ * The main hub for authenticated users. Displays workout history,
  * training streaks, and provides the interface for logging new sessions.
  */
 function Dashboard() {
-  const [workouts, setWorkouts] = useState<any[]>([]);
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [streak, setStreak] = useState(0);
 
   // Pagination states to handle large amounts of workout data

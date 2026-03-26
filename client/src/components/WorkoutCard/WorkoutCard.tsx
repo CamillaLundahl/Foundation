@@ -1,26 +1,13 @@
 import { useState } from "react";
 import "./WorkoutCard.scss";
-
-interface Exercise {
-  name: string;
-  sets: number;
-  reps: number;
-  weight: number;
-}
-
-interface Workout {
-  _id: string;
-  title: string;
-  exercises: Exercise[];
-  createdAt: string;
-}
+import type { Workout, WorkoutExercise } from "../../types";
 
 interface WorkoutCardProps {
   workout: Workout;
   onDelete: (id: string) => void;
   onUpdate: (
     id: string,
-    updatedData: { title: string; exercises: Exercise[] },
+    updatedData: { title: string; exercises: WorkoutExercise[] },
   ) => void;
 }
 
@@ -35,7 +22,7 @@ function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
 
   const handleExerciseChange = (
     index: number,
-    field: keyof Exercise,
+    field: keyof WorkoutExercise,
     value: string | number,
   ) => {
     const updated = [...editExercises];

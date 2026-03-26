@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import "./Exercises.scss";
+import type { Exercise } from "../../types";
 
 const MUSCLE_GROUPS = ["Ben", "Rygg", "Bröst", "Axlar", "Armar", "Mage"];
-
-interface Exercise {
-  _id: string;
-  name: string;
-  muscleGroup: string;
-  isBodyweight: boolean;
-}
 
 /**
  * Exercises Component
