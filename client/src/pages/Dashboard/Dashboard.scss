@@ -1,9 +1,8 @@
-@use "styles/variables" as *;
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
 
 .dashboard-container {
-  padding: 40px 20px;
-  max-width: 800px;
-  margin: 0 auto;
+  @include page-layout;
 
   .dashboard-header {
     margin-bottom: 32px;
@@ -14,10 +13,8 @@
       gap: 15px;
 
       h1 {
-        margin: 0;
-        font-size: 2.2rem;
-        font-weight: 800;
-        color: $text-primary;
+        @include page-title;
+        margin-bottom: 0;
       }
 
       .streak-badge {
@@ -42,19 +39,7 @@
 
   .history-section {
     h2 {
-      font-size: 1.25rem;
-      color: $text-secondary;
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      &::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: $border-color;
-      }
+      @include section-header;
     }
 
     .workout-list {

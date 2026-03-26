@@ -1,12 +1,9 @@
-@use "styles/variables" as *;
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
 
 .workout-card {
-  background: $card-bg;
-  border: 1px solid $border-color;
-  padding: 24px;
-  border-radius: 16px;
+  @include card-style;
   margin-bottom: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   transition:
     transform 0.2s,
     box-shadow 0.2s;
@@ -29,12 +26,9 @@
     }
 
     .edit-title-input {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid $accent-blue;
-      color: white;
+      @include input-base;
       padding: 6px 10px;
-      border-radius: 6px;
-      outline: none;
+      width: auto;
     }
 
     .card-actions {
@@ -98,7 +92,6 @@
       display: flex;
       justify-content: space-between;
       color: $text-primary;
-
       strong {
         color: $accent-blue;
       }
@@ -114,21 +107,16 @@
         display: flex;
         gap: 8px;
         align-items: center;
+
         input {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid $border-color;
-          color: white;
+          @include input-base;
           padding: 6px;
-          border-radius: 4px;
           width: 60px;
-          outline: none;
           &[type="text"] {
             width: 140px;
           }
-          &:focus {
-            border-color: $accent-blue;
-          }
         }
+
         span {
           color: $text-secondary;
           font-size: 0.8rem;

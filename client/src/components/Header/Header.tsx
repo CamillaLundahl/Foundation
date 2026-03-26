@@ -16,8 +16,19 @@ function Header() {
     navigate("/");
   };
 
-   // If no token exists, the user is not logged in, do not render the header.
+  // If no token exists, the user is not logged in, do not render the header.
   if (!token) return null;
+
+  const navLinks = [
+    { path: "/dashboard", label: "Dashboard" },
+    { path: "/programs", label: "Program" },
+    { path: "/exercises", label: "Övningar" },
+    { path: "/profile", label: "Profil" },
+  ];
+
+  const getLinkClass = (path: string) => {
+    return `nav-link ${location.pathname === path ? "active" : ""}`;
+  };
 
   return (
     <header className="main-header">
@@ -28,35 +39,18 @@ function Header() {
           </Link>
 
           <nav className="main-nav">
-            <Link
-              to="/dashboard"
-              className={`nav-link ${location.pathname === "/dashboard" ? "active" : ""}`}
-            >
-              Dashboard
-            </Link>
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={getLinkClass(link.path)}
+              >
+                {link.label}
+              </Link>
+            ))}
+
             <Link to="#" className="nav-link disabled">
               Statistik
-            </Link>
-
-            <Link
-              to="/programs"
-              className={`nav-link ${location.pathname === "/programs" ? "active" : ""}`}
-            >
-              Program
-            </Link>
-
-            <Link
-              to="/exercises"
-              className={`nav-link ${location.pathname === "/exercises" ? "active" : ""}`}
-            >
-              Övningar
-            </Link>
-
-            <Link
-              to="/profile"
-              className={`nav-link ${location.pathname === "/profile" ? "active" : ""}`}
-            >
-              Profil
             </Link>
           </nav>
         </div>

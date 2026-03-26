@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import "./Exercises.scss";
+import type { Exercise } from "../../types";
 
 const MUSCLE_GROUPS = ["Ben", "Rygg", "Bröst", "Axlar", "Armar", "Mage"];
-
-interface Exercise {
-  _id: string;
-  name: string;
-  muscleGroup: string;
-  isBodyweight: boolean;
-}
 
 /**
  * Exercises Component
@@ -40,15 +34,11 @@ function Exercises() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post("/exercises", {
-        name,
-        muscleGroup,
-        isBodyweight,
-      });
+      await api.post("/exercises", { name, muscleGroup, isBodyweight });
+
       // Reset form fields on success
       setName("");
       setIsBodyweight(false);
-      // Refresh the exercise library
       fetchExercises();
     } catch {
       alert("Fel vid sparning");
@@ -61,45 +51,49 @@ function Exercises() {
 
       {/* Create new exercise */}
       <form onSubmit={handleSubmit} className="add-exercise-form">
-        <input
-          type="text"
-          placeholder="Övningsnamn"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+        <h3>Skapa ny övning</h3>
 
-        <select
-          value={muscleGroup}
-          onChange={(e) => setMuscleGroup(e.target.value)}
-        >
-          {MUSCLE_GROUPS.map((group) => (
-            <option key={group} value={group}>
-              {group}
-            </option>
-          ))}
-        </select>
-
-        {/* Checkbox to define if the exercise should be tracked via Reps instead of Weight */}
-        <label className="checkbox-container">
+        <div className="form-row">
           <input
-            type="checkbox"
-            checked={isBodyweight}
-            onChange={(e) => setIsBodyweight(e.target.checked)}
+            type="text"
+            placeholder="Övningsnamn"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
           />
-          Kroppsvikt
-        </label>
 
-        <button type="submit">Skapa övning</button>
+          <select
+            value={muscleGroup}
+            onChange={(e) => setMuscleGroup(e.target.value)}
+          >
+            {MUSCLE_GROUPS.map((group) => (
+              <option key={group} value={group}>
+                {group}
+              </option>
+            ))}
+          </select>
+
+          {/* Checkbox to define if the exercise should be tracked via Reps instead of Weight */}
+          <label className="checkbox-container">
+            <input
+              type="checkbox"
+              checked={isBodyweight}
+              onChange={(e) => setIsBodyweight(e.target.checked)}
+            />
+            Kroppsvikt
+          </label>
+
+          <button type="submit">Spara övning</button>
+        </div>
       </form>
 
       <div className="exercise-grid">
-        {exercises.map((ex) => (
-          <div key={ex._id} className="exercise-card">
-            <h3>{ex.name}</h3>
+        {exercises.map(({ _id, name, muscleGroup, isBodyweight }) => (
+          <div key={_id} className="exercise-card">
+            <h3>{name}</h3>
             <div className="badge-row">
-              <span className="badge">{ex.muscleGroup}</span>
-              {ex.isBodyweight && <span className="badge bw">Kroppsvikt</span>}
+              <span className="badge">{muscleGroup}</span>
+              {isBodyweight && <span className="badge bw">Kroppsvikt</span>}
             </div>
           </div>
         ))}

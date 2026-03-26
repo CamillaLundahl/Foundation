@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import "./Profile.scss";
+import type { PersonalRecord } from "../../types";
 
 /**
  * Profile Component
@@ -14,7 +15,7 @@ function Profile() {
     streak: 0,
   });
   // List of personal records for various exercises
-  const [records, setRecords] = useState<any[]>([]);
+  const [records, setRecords] = useState<PersonalRecord[]>([]);
   const username = localStorage.getItem("user");
 
   useEffect(() => {
