@@ -26,10 +26,9 @@ function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
     value: string | number,
   ) => {
     const updated = [...editExercises];
-    updated[index] = {
-      ...updated[index],
-      [field]: field === "name" ? value : Number(value),
-    };
+    const finalValue = field === "name" ? value : Number(value);
+
+    updated[index] = { ...updated[index], [field]: finalValue };
     setEditExercises(updated);
   };
 
@@ -38,6 +37,9 @@ function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
     onUpdate(workout._id, { title: editTitle, exercises: editExercises });
     setIsEditing(false);
   };
+
+  // Displays either the original data or the edited data depending on the current state.
+  const displayExercises = isEditing ? editExercises : workout.exercises;
 
   return (
     <div className="workout-card">
@@ -88,7 +90,7 @@ function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
 
       {/* Exercise list */}
       <ul className="exercise-list">
-        {(isEditing ? editExercises : workout.exercises).map((ex, i) => (
+        {displayExercises.map((ex, i) => (
           <li key={i} className={isEditing ? "edit-row" : ""}>
             {isEditing ? (
               <div className="edit-exercise-inputs">
