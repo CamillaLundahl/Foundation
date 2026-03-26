@@ -1,0 +1,98 @@
+@use "variables" as *;
+
+@mixin page-layout {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@mixin page-title {
+  margin-top: 0;
+  margin-bottom: 32px;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: $text-primary;
+}
+
+@mixin input-base {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  padding: 12px;
+  color: $text-primary;
+  font-size: 1rem;
+  line-height: 1.2;
+  outline: none;
+  transition: all 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: $accent-blue;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  &::placeholder {
+    color: rgba($text-secondary, 0.5);
+  }
+}
+
+@mixin horizontal-line($color: $border-color, $height: 1px) {
+  content: "";
+  flex: 1;
+  height: $height;
+  background: $color;
+}
+
+@mixin button-base($bg: transparent, $color: $accent-blue, $border: none) {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: $border;
+  background: $bg;
+  color: $color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+
+@mixin section-header($margin-bottom: 24px) {
+  color: $text-secondary;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: $margin-bottom;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  &::after {
+    @include horizontal-line;
+  }
+}
+
+@mixin card-style {
+  background: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  box-sizing: border-box;
+}

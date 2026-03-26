@@ -51,36 +51,40 @@ function Exercises() {
 
       {/* Create new exercise */}
       <form onSubmit={handleSubmit} className="add-exercise-form">
-        <input
-          type="text"
-          placeholder="Övningsnamn"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+        <h3>Skapa ny övning</h3>
 
-        <select
-          value={muscleGroup}
-          onChange={(e) => setMuscleGroup(e.target.value)}
-        >
-          {MUSCLE_GROUPS.map((group) => (
-            <option key={group} value={group}>
-              {group}
-            </option>
-          ))}
-        </select>
-
-        {/* Checkbox to define if the exercise should be tracked via Reps instead of Weight */}
-        <label className="checkbox-container">
+        <div className="form-row">
           <input
-            type="checkbox"
-            checked={isBodyweight}
-            onChange={(e) => setIsBodyweight(e.target.checked)}
+            type="text"
+            placeholder="Övningsnamn"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
           />
-          Kroppsvikt
-        </label>
 
-        <button type="submit">Skapa övning</button>
+          <select
+            value={muscleGroup}
+            onChange={(e) => setMuscleGroup(e.target.value)}
+          >
+            {MUSCLE_GROUPS.map((group) => (
+              <option key={group} value={group}>
+                {group}
+              </option>
+            ))}
+          </select>
+
+          {/* Checkbox to define if the exercise should be tracked via Reps instead of Weight */}
+          <label className="checkbox-container">
+            <input
+              type="checkbox"
+              checked={isBodyweight}
+              onChange={(e) => setIsBodyweight(e.target.checked)}
+            />
+            Kroppsvikt
+          </label>
+
+          <button type="submit">Spara övning</button>
+        </div>
       </form>
 
       <div className="exercise-grid">
