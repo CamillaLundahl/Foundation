@@ -5,7 +5,10 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #0f111a;
+  background: linear-gradient(135deg, #0f111a 0%, #161925 50%, #1a1d2e 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  
   color: #ffffff;
   font-family:
     "Inter",
