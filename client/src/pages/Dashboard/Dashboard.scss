@@ -4,6 +4,14 @@
 .dashboard-container {
   @include page-layout;
 
+  @include mobile {
+    padding: 20px 10px; // Mindre luft på mobilen
+
+    h1 {
+      font-size: 1.8rem;
+    } // Mindre text på mobilen
+  }
+
   .dashboard-header {
     margin-bottom: 32px;
 

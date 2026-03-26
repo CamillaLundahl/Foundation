@@ -39,10 +39,8 @@ function Profile() {
 
   return (
     <div className="profile-container">
-      <h1>Profil</h1>
       <div className="user-info">
         <div className="avatar">{username?.charAt(0).toUpperCase()}</div>
-        <h2>{username}</h2>
       </div>
 
       <div className="stats-grid">

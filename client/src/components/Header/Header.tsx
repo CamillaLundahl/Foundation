@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import "./Header.scss";
 
@@ -6,14 +7,19 @@ import "./Header.scss";
  * Handles global navigation and displays user session information.
  */
 function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const username = localStorage.getItem("user");
   const token = localStorage.getItem("token");
 
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const closeMenu = () => setIsMenuOpen(false);
+
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
+    closeMenu();
   };
 
   // If no token exists, the user is not logged in, do not render the header.
@@ -33,35 +39,50 @@ function Header() {
   return (
     <header className="main-header">
       <div className="header-inner">
-        <div className="header-left">
-          <Link to="/dashboard" className="logo">
+        {/* Top row with Logo and Burger Toggle */}
+        <div className="header-top-row">
+          <Link to="/dashboard" className="logo" onClick={closeMenu}>
             FOUNDATION
           </Link>
 
+          <button
+            className={`menu-toggle ${isMenuOpen ? "is-active" : ""}`}
+            onClick={toggleMenu}
+            aria-label="Meny"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+
+        {/* Collapsible content */}
+        <div className={`header-content ${isMenuOpen ? "is-open" : ""}`}>
           <nav className="main-nav">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 className={getLinkClass(link.path)}
+                onClick={closeMenu}
               >
                 {link.label}
               </Link>
             ))}
 
-            <Link to="#" className="nav-link disabled">
+            <Link to="#" className="nav-link disabled" onClick={closeMenu}>
               Statistik
             </Link>
           </nav>
-        </div>
 
-        <div className="nav-info">
-          <span className="user-badge">
-            Inloggad: <strong>{username}</strong>
-          </span>
-          <button onClick={handleLogout} className="logout-link">
-            Logga ut
-          </button>
+          <div className="nav-info">
+            <span className="user-badge">
+              Inloggad: <strong>{username}</strong>
+            </span>
+            <button onClick={handleLogout} className="logout-link">
+              Logga ut
+            </button>
+          </div>
         </div>
       </div>
     </header>
