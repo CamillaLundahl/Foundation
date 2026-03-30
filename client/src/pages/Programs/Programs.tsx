@@ -36,12 +36,12 @@ function Programs() {
    */
   const fetchData = async () => {
     try {
-      const [exRes, progRes] = await Promise.all([
+      const [{ data: exData }, { data: progData }] = await Promise.all([
         api.get("/exercises"),
         api.get("/programs"),
       ]);
-      setLibrary(exRes.data);
-      setPrograms(progRes.data);
+      setLibrary(exData);
+      setPrograms(progData);
     } catch {
       console.error("Kunde inte hämta data");
     }
@@ -57,26 +57,19 @@ function Programs() {
    * Also sorts the results alphabetically.
    */
   const filteredLibrary = library
-    .filter((ex) => {
-      const matchesSearch = ex.name
-        .toLowerCase()
-        .includes(exSearch.toLowerCase());
+    .filter(({ name, muscleGroup }) => {
+      const matchesSearch = name.toLowerCase().includes(exSearch.toLowerCase());
       const matchesCategory =
-        exCategory === "Alla" || ex.muscleGroup === exCategory;
+        exCategory === "Alla" || muscleGroup === exCategory;
       return matchesSearch && matchesCategory;
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
   const toggleExercise = (name: string, isEdit: boolean = false) => {
-    if (isEdit) {
-      setEditExercises((prev) =>
-        prev.includes(name) ? prev.filter((e) => e !== name) : [...prev, name],
-      );
-    } else {
-      setSelectedExercises((prev) =>
-        prev.includes(name) ? prev.filter((e) => e !== name) : [...prev, name],
-      );
-    }
+    const setter = isEdit ? setEditExercises : setSelectedExercises;
+    setter((prev) =>
+      prev.includes(name) ? prev.filter((e) => e !== name) : [...prev, name],
+    );
   };
 
   /**
@@ -87,11 +80,7 @@ function Programs() {
     e.preventDefault();
     if (selectedExercises.length === 0) return alert("Välj minst en övning!");
     try {
-      await api.post(
-        "/programs",
-        { title, exercises: selectedExercises }
-      );
-      // Reset form on success
+      await api.post("/programs", { title, exercises: selectedExercises });
       setTitle("");
       setSelectedExercises([]);
       fetchData();
@@ -101,19 +90,19 @@ function Programs() {
   };
 
   // Editing a program
-  const startEdit = (p: Program) => {
-    setEditingId(p._id);
-    setEditTitle(p.title);
-    setEditExercises([...p.exercises]);
+  const startEdit = ({ _id, title, exercises }: Program) => {
+    setEditingId(_id);
+    setEditTitle(title);
+    setEditExercises([...exercises]);
   };
 
   // Send updated data to the API
   const handleUpdate = async (id: string) => {
     try {
-      await api.put(
-        `/programs/${id}`,
-        { title: editTitle, exercises: editExercises }
-      );
+      await api.put(`/programs/${id}`, {
+        title: editTitle,
+        exercises: editExercises,
+      });
       setEditingId(null); //Exit edit mode
       fetchData();
     } catch {
@@ -133,9 +122,9 @@ function Programs() {
   };
 
   // Start a program by navigating to the Dashboard
-  const startProgram = (p: Program) => {
+  const startProgram = ({ exercises, title }: Program) => {
     navigate("/dashboard", {
-      state: { templateExercises: p.exercises, templateTitle: p.title },
+      state: { templateExercises: exercises, templateTitle: title },
     });
   };
 
@@ -178,14 +167,14 @@ function Programs() {
             </header>
 
             <div className="chip-grid">
-              {filteredLibrary.map((ex) => (
+              {filteredLibrary.map(({ _id, name }) => (
                 <button
-                  key={ex._id}
+                  key={_id}
                   type="button"
-                  className={`chip ${selectedExercises.includes(ex.name) ? "active" : ""}`}
-                  onClick={() => toggleExercise(ex.name)}
+                  className={`chip ${selectedExercises.includes(name) ? "active" : ""}`}
+                  onClick={() => toggleExercise(name)}
                 >
-                  {ex.name}
+                  {name}
                 </button>
               ))}
               {filteredLibrary.length === 0 && (
@@ -225,14 +214,14 @@ function Programs() {
                   </div>
 
                   <div className="chip-grid small">
-                    {filteredLibrary.map((ex) => (
+                    {filteredLibrary.map(({ _id, name }) => (
                       <button
-                        key={ex._id}
+                        key={_id}
                         type="button"
-                        className={`chip ${editExercises.includes(ex.name) ? "active" : ""}`}
-                        onClick={() => toggleExercise(ex.name, true)}
+                        className={`chip ${editExercises.includes(name) ? "active" : ""}`}
+                        onClick={() => toggleExercise(name, true)}
                       >
-                        {ex.name}
+                        {name}
                       </button>
                     ))}
                   </div>

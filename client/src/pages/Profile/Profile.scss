@@ -7,6 +7,7 @@
 
   .user-info {
     margin-bottom: 48px;
+
     .avatar {
       width: 100px;
       height: 100px;
@@ -20,11 +21,6 @@
       font-weight: 800;
       margin: 0 auto 20px;
       box-shadow: 0 0 20px rgba($accent-blue, 0.3);
-    }
-    h2 {
-      font-size: 2rem;
-      color: $text-primary;
-      margin: 0;
     }
   }
 
@@ -53,6 +49,7 @@
         letter-spacing: 1px;
         margin-bottom: 12px;
       }
+
       strong {
         color: $text-primary;
         font-size: 1.8rem;

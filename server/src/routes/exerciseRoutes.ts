@@ -1,18 +1,18 @@
-import express from "express";
+import { Router } from "express";
 import Exercise from "../models/Exercises";
 
 /**
  * Exercise Routes
  * This router manages the global library of exercises available to all users.
  */
-const router = express.Router();
+const router = Router();
 
 // Get all exercises and sorted alphabetically
 router.get("/", async (req, res) => {
   try {
     const exercises = await Exercise.find().sort({ name: 1 });
     res.json(exercises);
-  } catch (err) {
+  } catch {
     res.status(500).json({ message: "Kunde inte hämta övningar" });
   }
 });
@@ -21,15 +21,14 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   const { name, muscleGroup, isBodyweight } = req.body;
   try {
-    const newExercise = new Exercise({ 
-      name, 
-      muscleGroup, 
-      isBodyweight: isBodyweight || false // Set isBodyweight to false if not provided
+    const newExercise = await Exercise.create({
+      name,
+      muscleGroup,
+      isBodyweight,
     });
-    
-    await newExercise.save();
+
     res.status(201).json(newExercise);
-  } catch (err) {
+  } catch {
     res
       .status(400)
       .json({ message: "Övningen finns redan eller felaktig data" });

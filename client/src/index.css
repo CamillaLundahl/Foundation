@@ -4,35 +4,36 @@
   color-scheme: dark;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 ::-webkit-scrollbar {
   width: 10px;
-}
 
-::-webkit-scrollbar-track {
-  background: #0f111a; 
-}
+  &-track {
+    background: #0f111a;
+  }
 
-::-webkit-scrollbar-thumb {
-  background: #2e3248;
-  border-radius: 10px;
-  border: 2px solid #0f111a;
-  
-  &:hover {
-    background: #3f4464;
+  &-thumb {
+    background: #2e3248;
+    border-radius: 10px;
+    border: 2px solid #0f111a;
+
+    &:hover {
+      background: #3f4464;
+    }
   }
 }
 
 body {
   margin: 0;
-  padding: 0;
-  background: linear-gradient(135deg, #0f111a 0%, #161925 50%, #1a1d2e 100%);
-  background-attachment: fixed;
+  background: linear-gradient(135deg, #0f111a 0%, #161925 50%, #1a1d2e 100%)
+    fixed;
   min-height: 100vh;
   color: #ffffff;
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }

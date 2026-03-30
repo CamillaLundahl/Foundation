@@ -1,8 +1,14 @@
 @use "variables" as *;
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @mixin page-layout {
@@ -19,8 +25,7 @@
 }
 
 @mixin page-title {
-  margin-top: 0;
-  margin-bottom: 32px;
+  margin: 0 0 32px;
   font-size: 2.2rem;
   font-weight: 800;
   color: $text-primary;
@@ -57,6 +62,9 @@
 }
 
 @mixin button-base($bg: transparent, $color: $accent-blue, $border: none) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   padding: 12px;
   border-radius: 10px;
@@ -66,9 +74,6 @@
   border: $border;
   background: $bg;
   color: $color;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   &:hover:not(:disabled) {
     opacity: 0.9;
@@ -86,14 +91,14 @@
 }
 
 @mixin section-header($margin-bottom: 24px) {
+  display: flex;
+  align-items: center;
+  gap: 15px;
   color: $text-secondary;
   font-size: 1.1rem;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: $margin-bottom;
-  display: flex;
-  align-items: center;
-  gap: 15px;
 
   &::after {
     @include horizontal-line;
