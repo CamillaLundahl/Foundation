@@ -11,7 +11,7 @@ export interface IProgram extends Document {
 }
 
 // Define the structure of a program collection in the database
-const ProgramSchema: Schema = new Schema(
+const ProgramSchema = new Schema(
   {
     // Ensure users only have access to their own programs
     user: {
@@ -24,12 +24,10 @@ const ProgramSchema: Schema = new Schema(
       required: true,
     },
     // Array of exercise names
-    exercises: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
+    exercises: {
+      type: [String],
+      required: true,
+    },
   },
   // Automatically create createdAt and updatedAt fields
   { timestamps: true },

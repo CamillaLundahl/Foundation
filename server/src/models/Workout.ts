@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, model } from "mongoose";
 
 /**
  * IWorkout Interface
@@ -19,7 +19,7 @@ export interface IWorkout extends Document {
 }
 
 // Define the structure of a workout collection in the database
-const WorkoutSchema: Schema = new Schema(
+const WorkoutSchema = new Schema(
   {
     // Ensure users only have access to their own workouts
     user: {
@@ -44,4 +44,4 @@ const WorkoutSchema: Schema = new Schema(
   { timestamps: true },
 );
 
-export default mongoose.model<IWorkout>("Workout", WorkoutSchema);
+export default model<IWorkout>("Workout", WorkoutSchema);

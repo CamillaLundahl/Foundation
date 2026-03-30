@@ -24,15 +24,15 @@ function Register() {
 
     try {
       // POST request to the backend
-      const res = await api.post("/auth/register", {
+      const { data } = await api.post("/auth/register", {
         username,
         password,
       });
-      
+
       // On success, store the JWT token and username in localStorage
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", res.data.username);
-      
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", data.username);
+
       // Navigate to the dashboard
       navigate("/dashboard");
     } catch {

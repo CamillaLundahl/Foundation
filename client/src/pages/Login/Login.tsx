@@ -22,12 +22,13 @@ function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await api.post("/auth/login", {
+      const { data } = await api.post("/auth/login", {
         username,
         password,
       });
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", res.data.username);
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", data.username);
       navigate("/dashboard");
     } catch {
       alert("Inloggning misslyckades. Kontrollera användarnamn och lösenord.");

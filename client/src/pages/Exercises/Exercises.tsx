@@ -21,7 +21,7 @@ function Exercises() {
     try {
       const { data } = await api.get("/exercises");
       setExercises(data);
-    } catch (err) {
+    } catch {
       console.error("Kunde inte hämta övningar");
     }
   };

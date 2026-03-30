@@ -53,6 +53,7 @@
           color: white;
         }
       }
+
       .delete-button {
         background: rgba($accent-red, 0.1);
         color: $accent-red;
@@ -61,10 +62,12 @@
           color: white;
         }
       }
+
       .save-btn {
         background: $accent-blue;
         color: white;
       }
+
       .cancel-btn {
         background: rgba($text-secondary, 0.2);
         color: white;
@@ -92,34 +95,33 @@
       display: flex;
       justify-content: space-between;
       color: $text-primary;
+
       strong {
         color: $accent-blue;
       }
-    }
 
-    .edit-row {
-      border: 1px solid rgba($border-color, 0.5);
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 8px;
-      padding: 10px;
+      &.edit-row {
+        border: 1px solid rgba($border-color, 0.5);
+        background: rgba(255, 255, 255, 0.02);
 
-      .edit-exercise-inputs {
-        display: flex;
-        gap: 8px;
-        align-items: center;
+        .edit-exercise-inputs {
+          display: flex;
+          gap: 8px;
+          align-items: center;
 
-        input {
-          @include input-base;
-          padding: 6px;
-          width: 60px;
-          &[type="text"] {
-            width: 140px;
+          input {
+            @include input-base;
+            padding: 6px;
+            width: 60px;
+            &[type="text"] {
+              width: 140px;
+            }
           }
-        }
 
-        span {
-          color: $text-secondary;
-          font-size: 0.8rem;
+          span {
+            color: $text-secondary;
+            font-size: 0.8rem;
+          }
         }
       }
     }

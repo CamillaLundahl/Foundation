@@ -11,11 +11,11 @@ export interface IExercise extends Document {
 }
 
 // Exercise Schema, defines the structure of an exercise collection in the database
-const ExerciseSchema: Schema = new Schema({
+const ExerciseSchema = new Schema({
   // Required fields
   name: { type: String, required: true, unique: true },
   muscleGroup: { type: String, required: true },
-// Default is false, if true, the exercise is bodyweight
+  // Default is false, if true, the exercise is bodyweight
   isBodyweight: { type: Boolean, default: false },
 });
 
