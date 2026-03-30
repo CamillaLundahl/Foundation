@@ -12,16 +12,17 @@ export interface WorkoutExercise {
   weight: number;
 }
 
-export interface Workout {
+interface BaseEntity {
   _id: string;
   title: string;
+}
+
+export interface Workout extends BaseEntity {
   exercises: WorkoutExercise[];
   createdAt: string;
 }
 
-export interface Program {
-  _id: string;
-  title: string;
+export interface Program extends BaseEntity {
   exercises: string[];
 }
 

@@ -17,10 +17,12 @@ connectDB();
 
 const app = express();
 
+const { CLIENT_URL = "http://localhost:5173", PORT = 5000 } = process.env;
+
 // Middleware, enables CORS and JSON parsing
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: CLIENT_URL,
     credentials: true,
   }),
 );
@@ -37,7 +39,6 @@ app.get("/", (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Servern är igång på http://localhost:${PORT}`);
 });

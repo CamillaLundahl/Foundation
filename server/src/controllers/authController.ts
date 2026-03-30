@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
-import User from '../models/User';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { Request, Response } from "express";
+import User from "../models/User";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 /**
  * Register new user
@@ -15,29 +15,29 @@ export const register = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user with hashed password
-    const newUser = new User({
+    const newUser = await User.create({
       username,
-      password: hashedPassword
+      password: hashedPassword,
     });
-
-    await newUser.save();
 
     // Generate a JWT token
     const token = jwt.sign(
-      { id: newUser._id }, 
-      process.env.JWT_SECRET || 'hemlighet', 
-      { expiresIn: '30d' }
+      { id: newUser._id },
+      process.env.JWT_SECRET || "hemlighet",
+      { expiresIn: "30d" },
     );
 
     // Send the token and username in the response
-    res.status(201).json({ 
-      token, 
+    res.status(201).json({
+      token,
       username: newUser.username,
-      message: 'Användare skapad och inloggad!' 
+      message: "Användare skapad och inloggad!",
     });
   } catch (error) {
     // Error handling for user creation
-    res.status(500).json({ message: 'Kunde inte skapa användare (namnet kan vara upptaget)' });
+    res.status(500).json({
+      message: "Kunde inte skapa användare (namnet kan vara upptaget)",
+    });
   }
 };
 
@@ -47,27 +47,25 @@ export const login = async (req: Request, res: Response) => {
     const { username, password } = req.body;
 
     // Find user by username
-    const user: any = await User.findOne({ username });
-    if (!user) {
-      return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
-    }
+    const user = await User.findOne({ username });
 
     // Compare password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Fel användarnamn eller lösenord' });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res
+        .status(401)
+        .json({ message: "Fel användarnamn eller lösenord" });
     }
 
     // Generate JWT token
     const token = jwt.sign(
-      { id: user._id }, 
-      process.env.JWT_SECRET || 'hemlighet', 
-      { expiresIn: '30d' }
+      { id: user._id },
+      process.env.JWT_SECRET || "hemlighet",
+      { expiresIn: "30d" },
     );
 
     // Send the token and username in the response
     res.json({ token, username: user.username });
   } catch (error) {
-    res.status(500).json({ message: 'Serverfel vid inloggning' });
+    res.status(500).json({ message: "Serverfel vid inloggning" });
   }
 };

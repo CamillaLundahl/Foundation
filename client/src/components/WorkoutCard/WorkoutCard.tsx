@@ -26,9 +26,10 @@ function WorkoutCard({ workout, onDelete, onUpdate }: WorkoutCardProps) {
     value: string | number,
   ) => {
     const updated = [...editExercises];
-    const finalValue = field === "name" ? value : Number(value);
-
-    updated[index] = { ...updated[index], [field]: finalValue };
+    updated[index] = {
+      ...updated[index],
+      [field]: field === "name" ? value : Number(value),
+    };
     setEditExercises(updated);
   };
 

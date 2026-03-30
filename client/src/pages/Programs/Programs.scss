@@ -16,7 +16,7 @@
     @include card-style;
     margin-bottom: 50px;
 
-        .main-input {
+    .main-input {
       @include input-base;
       margin-bottom: 24px;
     }
@@ -48,28 +48,15 @@
         gap: 10px;
 
         input {
-          background: $card-bg;
-          border: 1px solid $border-color;
+          @include input-base;
           padding: 8px 12px;
-          border-radius: 8px;
-          color: white;
-          font-size: 0.85rem;
           width: 180px;
-          outline: none;
-
-          &:focus {
-            border-color: $accent-blue;
-          }
         }
 
         select {
-          background: $card-bg;
-          border: 1px solid $border-color;
-          color: white;
+          @include input-base;
           padding: 8px;
-          border-radius: 8px;
           cursor: pointer;
-          outline: none;
         }
       }
     }
@@ -132,23 +119,14 @@
   }
 
   .save-btn {
+    @include button-base(
+      $accent-blue,
+      white
+    );
     width: 100%;
-    background: $accent-blue;
-    color: white;
-    border: none;
     padding: 16px;
-    border-radius: 12px;
     font-weight: 800;
     font-size: 1rem;
-    cursor: pointer;
-    transition:
-      transform 0.2s,
-      opacity 0.2s;
-
-    &:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
   }
 
   .program-list {
@@ -158,10 +136,8 @@
       gap: 25px;
 
       .program-card {
-        background: $card-bg;
-        border: 1px solid $border-color;
+        @include card-style;
         padding: 24px;
-        border-radius: 16px;
         display: flex;
         flex-direction: column;
         transition: border-color 0.3s;
@@ -220,19 +196,14 @@
         }
 
         .start-btn {
+          @include button-base(
+            $accent-blue,
+            white
+          );
           width: 100%;
           margin-top: 20px;
-          background: $accent-blue;
-          color: white;
-          border: none;
           padding: 12px;
-          border-radius: 10px;
           font-weight: 700;
-          cursor: pointer;
-          transition: background 0.2s;
-          &:hover {
-            background: color-mix(in srgb, $accent-blue, black 15%);
-          }
         }
 
         .edit-mode {
@@ -241,12 +212,8 @@
           gap: 15px;
 
           .edit-title-input {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid $accent-blue;
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            outline: none;
+            @include input-base;
+            border-color: $accent-blue;
           }
 
           .edit-actions {

@@ -20,8 +20,8 @@ function Dashboard() {
   const [totalPages, setTotalPages] = useState(1);
 
   const username = localStorage.getItem("user") || "Användare";
-  const location = useLocation();
-  const templateData = location.state as any;
+
+  const { state: templateData } = useLocation();
 
   const fetchDashboardData = async (pageNumber: number) => {
     try {

@@ -7,6 +7,15 @@ import Profile from "./pages/Profile/Profile";
 import Exercises from "./pages/Exercises/Exercises";
 import Programs from "./pages/Programs/Programs";
 
+const routes = [
+  { path: "/", element: <Login /> },
+  { path: "/register", element: <Register /> },
+  { path: "/dashboard", element: <Dashboard /> },
+  { path: "/profile", element: <Profile /> },
+  { path: "/exercises", element: <Exercises /> },
+  { path: "/programs", element: <Programs /> },
+];
+
 /**
  * App Component
  * This is the root component of the application.
@@ -16,15 +25,11 @@ function App() {
   return (
     <Router>
       <Header />
-
       <main>
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/exercises" element={<Exercises />} />
-          <Route path="/programs" element={<Programs />} />
+          {routes.map((route) => (
+            <Route key={route.path} {...route} />
+          ))}
         </Routes>
       </main>
     </Router>

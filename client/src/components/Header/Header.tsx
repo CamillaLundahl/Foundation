@@ -2,6 +2,13 @@ import { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import "./Header.scss";
 
+const navLinks = [
+  { path: "/dashboard", label: "Dashboard" },
+  { path: "/programs", label: "Program" },
+  { path: "/exercises", label: "Övningar" },
+  { path: "/profile", label: "Profil" },
+];
+
 /**
  * Header Component
  * Handles global navigation and displays user session information.
@@ -9,7 +16,7 @@ import "./Header.scss";
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
+  const { pathname } = useLocation();
   const username = localStorage.getItem("user");
   const token = localStorage.getItem("token");
 
@@ -24,17 +31,6 @@ function Header() {
 
   // If no token exists, the user is not logged in, do not render the header.
   if (!token) return null;
-
-  const navLinks = [
-    { path: "/dashboard", label: "Dashboard" },
-    { path: "/programs", label: "Program" },
-    { path: "/exercises", label: "Övningar" },
-    { path: "/profile", label: "Profil" },
-  ];
-
-  const getLinkClass = (path: string) => {
-    return `nav-link ${location.pathname === path ? "active" : ""}`;
-  };
 
   return (
     <header className="main-header">
@@ -59,16 +55,20 @@ function Header() {
         {/* Collapsible content */}
         <div className={`header-content ${isMenuOpen ? "is-open" : ""}`}>
           <nav className="main-nav">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={getLinkClass(link.path)}
-                onClick={closeMenu}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map(
+              (
+                { path, label },
+              ) => (
+                <Link
+                  key={path}
+                  to={path}
+                  className={`nav-link ${pathname === path ? "active" : ""}`}
+                  onClick={closeMenu}
+                >
+                  {label}
+                </Link>
+              ),
+            )}
 
             <Link to="#" className="nav-link disabled" onClick={closeMenu}>
               Statistik

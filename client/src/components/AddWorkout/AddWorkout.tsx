@@ -39,15 +39,15 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
   useEffect(() => {
     if (templateData) {
       setTitle(templateData.templateTitle);
-      const preparedExercises = templateData.templateExercises.map(
-        (exName) => ({
+      // REFAKTORERING: Förenklat mappningen genom att returnera objektet direkt
+      setExercises(
+        templateData.templateExercises.map((exName) => ({
           name: exName,
           sets: 0,
           reps: 0,
           weight: 0,
-        }),
+        })),
       );
-      setExercises(preparedExercises);
     }
   }, [templateData]);
 
@@ -61,9 +61,8 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
     setExercises(updated);
   };
 
-  const removeExercise = (index: number) => {
+  const removeExercise = (index: number) =>
     setExercises(exercises.filter((_, i) => i !== index));
-  };
 
   const addExercise = () => {
     if (name) {
@@ -87,7 +86,6 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
 
     try {
       await api.post("/workouts", { title, exercises: finalExercises });
-
       setTitle("");
       setExercises([]);
       onWorkoutAdded();
@@ -95,6 +93,9 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
       alert("Kunde inte spara passet.");
     }
   };
+
+  const getIsBW = (exName: string) =>
+    library.find((l) => l.name === exName)?.isBodyweight;
 
   return (
     <form className="add-workout-form" onSubmit={handleSubmit}>
@@ -111,8 +112,7 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
       {exercises.length > 0 && (
         <div className="staged-exercises-list">
           {exercises.map((ex, i) => {
-            // Check if this exercise is marked as bodyweight in the library
-            const isBW = library.find((l) => l.name === ex.name)?.isBodyweight;
+            const isBW = getIsBW(ex.name);
             return (
               <div key={i} className="staged-item-row">
                 <span className="ex-name">{ex.name}</span>
@@ -187,10 +187,8 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
           />
           <input
             type="number"
-            placeholder={
-              library.find((l) => l.name === name)?.isBodyweight ? "BW" : "kg"
-            }
-            disabled={library.find((l) => l.name === name)?.isBodyweight}
+            placeholder={getIsBW(name) ? "BW" : "kg"}
+            disabled={getIsBW(name)}
             value={weight || ""}
             onChange={(e) => setWeight(Number(e.target.value))}
             className="input-small"
@@ -201,7 +199,6 @@ function AddWorkout({ onWorkoutAdded, templateData }: AddWorkoutProps) {
       <button type="button" className="add-exercise-btn" onClick={addExercise}>
         + Lägg till i listan
       </button>
-
       <button type="submit" className="save-workout-btn">
         Spara hela träningspasset
       </button>

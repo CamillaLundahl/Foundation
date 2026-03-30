@@ -5,11 +5,11 @@
   @include page-layout;
 
   @include mobile {
-    padding: 20px 10px; // Mindre luft på mobilen
+    padding: 20px 10px;
 
     h1 {
       font-size: 1.8rem;
-    } // Mindre text på mobilen
+    }
   }
 
   .dashboard-header {
@@ -33,7 +33,6 @@
         padding: 6px 14px;
         border-radius: 20px;
         cursor: default;
-        transition: transform 0.2s;
 
         span {
           margin-left: 6px;
